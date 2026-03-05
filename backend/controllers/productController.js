@@ -14,29 +14,25 @@ export const getProducts = async (req, res) => {
 // ================= ADD PRODUCT =================
 export const addProduct = async (req, res) => {
   try {
-    // 1. Log incoming data to see what Multer processed
     console.log("--- NEW PRODUCT ATTEMPT ---");
     console.log("Body Data:", req.body);
     console.log("File Data:", req.file ? `Received: ${req.file.originalname}` : "NO FILE RECEIVED");
 
-    // 2. Validate file existence
     if (!req.file) {
       return res.status(400).json({ message: "Product image is required" });
     }
 
     const { name, category, basePrice } = req.body;
 
-    // 3. Validate required fields
     if (!name || !category || !basePrice) {
       return res.status(400).json({ message: "Missing product details (name, category, or price)" });
     }
 
-    // 4. Create and Save Product
     const product = new Product({
       name,
       category,
       basePrice: Number(basePrice),
-      image: req.file.path, // Cloudinary URL provided by Multer-Storage-Cloudinary
+      image: req.file.path, // Cloudinary URL
       active: true
     });
 
@@ -45,16 +41,10 @@ export const addProduct = async (req, res) => {
     res.status(201).json(product);
 
   } catch (error) {
-    // FIX: Detailed logging to reveal the true error in Render logs
+    // FIX: This forces the full error object to be visible in Render logs
     console.error("❌ ADD PRODUCT CRASHED:");
-    console.error("Error Message:", error.message);
-    console.error("Stack Trace:", error.stack);
+    console.error("DETAILED ERROR:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
     
-    // If it's a Cloudinary error, it will be hidden inside the error object
-    if (error.cloudinary) {
-      console.error("Cloudinary Specific Error:", JSON.stringify(error.cloudinary, null, 2));
-    }
-
     res.status(500).json({ 
       message: "Server Error: Could not add product", 
       error: error.message 
@@ -83,8 +73,9 @@ export const updateProduct = async (req, res) => {
 
     res.status(200).json(updatedProduct);
   } catch (error) {
-    console.error("UPDATE PRODUCT ERROR:", error.message);
-    res.status(500).json({ message: "Error updating product" });
+    console.error("❌ UPDATE PRODUCT ERROR:");
+    console.error("DETAILED ERROR:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    res.status(500).json({ message: "Error updating product", error: error.message });
   }
 };
 
