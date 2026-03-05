@@ -7,37 +7,55 @@ import {
   seedProducts
 } from "../controllers/productController.js";
 
-import upload from "../middleware/upload.js";
+// Ensure these filenames match exactly what is in your middleware folder
+import upload from "../middleware/upload.js"; 
 import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// ================= PUBLIC ROUTE =================
-// Anyone can view products
+/**
+ * @route   GET /api/products
+ * @desc    Get all products (Public)
+ */
 router.get("/", getProducts);
 
-// ================= PROTECTED ROUTES =================
-// Only logged-in admin can modify data
-
+/**
+ * @route   POST /api/products
+ * @desc    Add a new product (Protected)
+ * @middleware protect - Verifies Admin JWT
+ * @middleware upload.single("image") - Handles Cloudinary upload
+ */
 router.post(
   "/",
-  protect,
-  upload.single("image"),
-  addProduct
+  protect, // 1. Check if Admin is logged in
+  upload.single("image"), // 2. Upload image to Cloudinary
+  addProduct // 3. Save to MongoDB
 );
 
+/**
+ * @route   PUT /api/products/:id
+ * @desc    Update product price or status (Protected)
+ */
 router.put(
   "/:id",
   protect,
   updateProduct
 );
 
+/**
+ * @route   DELETE /api/products/:id
+ * @desc    Remove a product (Protected)
+ */
 router.delete(
   "/:id",
   protect,
   deleteProduct
 );
 
+/**
+ * @route   GET /api/products/seed
+ * @desc    Seed initial database (Protected)
+ */
 router.get(
   "/seed",
   protect,
