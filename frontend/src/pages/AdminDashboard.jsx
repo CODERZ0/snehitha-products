@@ -4,112 +4,203 @@ import AdminSidebar from "../components/AdminSidebar";
 import { useNavigate } from "react-router-dom";
 
 function AdminDashboard() {
+
   const [products, setProducts] = useState([]);
+
   const [form, setForm] = useState({
     name: "",
     category: "masalas",
     basePrice: "",
-    image: null,
+    image: null
   });
 
   const navigate = useNavigate();
 
-  // 🔐 PROTECT ROUTE
+  const API = import.meta.env.VITE_API_URL;
+
+  // ================= PROTECT ADMIN ROUTE =================
+
   useEffect(() => {
+
     const token = localStorage.getItem("adminToken");
+
     if (!token) {
       navigate("/admin");
     }
+
   }, []);
+
 
   const getAuthHeader = () => {
+
     return {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+      }
     };
+
   };
+
+
+  // ================= FETCH PRODUCTS =================
 
   const fetchProducts = async () => {
-    const res = await axios.get(
-      "http://localhost:5000/api/products"
-    );
-    setProducts(res.data);
+
+    try {
+
+      const res = await axios.get(`${API}/api/products`);
+
+      setProducts(res.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
   };
 
+
   useEffect(() => {
+
     fetchProducts();
+
   }, []);
 
+
   // ================= ADD PRODUCT =================
+
   const handleAddProduct = async (e) => {
+
     e.preventDefault();
 
     const formData = new FormData();
+
     formData.append("name", form.name);
     formData.append("category", form.category);
     formData.append("basePrice", form.basePrice);
     formData.append("image", form.image);
 
-    await axios.post(
-      "http://localhost:5000/api/products",
-      formData,
-      getAuthHeader()
-    );
+    try {
 
-    setForm({
-      name: "",
-      category: "masalas",
-      basePrice: "",
-      image: null,
-    });
+      await axios.post(
+        `${API}/api/products`,
+        formData,
+        getAuthHeader()
+      );
 
-    fetchProducts();
+      setForm({
+        name: "",
+        category: "masalas",
+        basePrice: "",
+        image: null
+      });
+
+      fetchProducts();
+
+    } catch (error) {
+
+      alert("Error adding product");
+
+    }
+
   };
 
-  // ================= TOGGLE ACTIVE =================
+
+  // ================= TOGGLE STOCK =================
+
   const toggleActive = async (product) => {
-    await axios.put(
-      `http://localhost:5000/api/products/${product._id}`,
-      { active: !product.active },
-      getAuthHeader()
-    );
-    fetchProducts();
+
+    try {
+
+      await axios.put(
+        `${API}/api/products/${product._id}`,
+        { active: !product.active },
+        getAuthHeader()
+      );
+
+      fetchProducts();
+
+    } catch (error) {
+
+      alert("Update failed");
+
+    }
+
   };
+
 
   // ================= UPDATE PRICE =================
+
   const updatePrice = async (id, newPrice) => {
-    await axios.put(
-      `http://localhost:5000/api/products/${id}`,
-      { basePrice: newPrice },
-      getAuthHeader()
-    );
-    fetchProducts();
+
+    try {
+
+      await axios.put(
+        `${API}/api/products/${id}`,
+        { basePrice: newPrice },
+        getAuthHeader()
+      );
+
+      fetchProducts();
+
+    } catch (error) {
+
+      alert("Price update failed");
+
+    }
+
   };
+
 
   // ================= DELETE PRODUCT =================
+
   const deleteProduct = async (id) => {
-    await axios.delete(
-      `http://localhost:5000/api/products/${id}`,
-      getAuthHeader()
-    );
-    fetchProducts();
+
+    if (!window.confirm("Delete this product?")) return;
+
+    try {
+
+      await axios.delete(
+        `${API}/api/products/${id}`,
+        getAuthHeader()
+      );
+
+      fetchProducts();
+
+    } catch (error) {
+
+      alert("Delete failed");
+
+    }
+
   };
+
+
+  // ================= LOGOUT =================
 
   const logout = () => {
+
     localStorage.removeItem("adminToken");
+
     navigate("/admin");
+
   };
 
+
   return (
+
     <div className="flex bg-cream min-h-screen">
 
       <AdminSidebar />
 
-      <div className="ml-64 p-10 w-full">
+      <div className="ml-64 p-6 md:p-10 w-full">
+
+        {/* HEADER */}
 
         <div className="flex justify-between items-center mb-10">
-          <h1 className="text-3xl font-bold text-brand">
+
+          <h1 className="text-2xl md:text-3xl font-bold text-brand">
             Product Management
           </h1>
 
@@ -119,9 +210,12 @@ function AdminDashboard() {
           >
             Logout
           </button>
+
         </div>
 
-        {/* ADD PRODUCT FORM */}
+
+        {/* ADD PRODUCT */}
+
         <div className="bg-white p-6 rounded-2xl shadow-lg mb-10">
 
           <h2 className="text-xl font-semibold mb-6">
@@ -130,7 +224,7 @@ function AdminDashboard() {
 
           <form
             onSubmit={handleAddProduct}
-            className="grid grid-cols-2 gap-6"
+            className="grid md:grid-cols-2 gap-6"
           >
 
             <input
@@ -169,7 +263,7 @@ function AdminDashboard() {
 
             <input
               type="file"
-              accept=".jpg"
+              accept=".jpg,.png"
               required
               onChange={(e) =>
                 setForm({ ...form, image: e.target.files[0] })
@@ -185,9 +279,12 @@ function AdminDashboard() {
             </button>
 
           </form>
+
         </div>
 
+
         {/* PRODUCT TABLE */}
+
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-6">
@@ -199,26 +296,34 @@ function AdminDashboard() {
             <table className="w-full text-left border-collapse">
 
               <thead>
+
                 <tr className="border-b">
+
                   <th className="p-3">Image</th>
                   <th className="p-3">Name</th>
                   <th className="p-3">Category</th>
                   <th className="p-3">Price/KG</th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Actions</th>
+
                 </tr>
+
               </thead>
 
               <tbody>
+
                 {products.map((product) => (
+
                   <tr key={product._id} className="border-b">
 
                     <td className="p-3">
+
                       <img
-                        src={`http://localhost:5000/uploads/${product.image}`}
+                        src={`${API}/uploads/${product.image}`}
                         alt={product.name}
                         className="w-16 h-16 object-contain"
                       />
+
                     </td>
 
                     <td className="p-3">{product.name}</td>
@@ -228,6 +333,7 @@ function AdminDashboard() {
                     </td>
 
                     <td className="p-3">
+
                       <input
                         type="number"
                         defaultValue={product.basePrice}
@@ -236,9 +342,11 @@ function AdminDashboard() {
                         }
                         className="border p-2 rounded w-24"
                       />
+
                     </td>
 
                     <td className="p-3">
+
                       <span
                         className={
                           product.active
@@ -250,6 +358,7 @@ function AdminDashboard() {
                           ? "Available"
                           : "Out of Stock"}
                       </span>
+
                     </td>
 
                     <td className="p-3 flex gap-4">
@@ -273,7 +382,9 @@ function AdminDashboard() {
                     </td>
 
                   </tr>
+
                 ))}
+
               </tbody>
 
             </table>
@@ -283,8 +394,11 @@ function AdminDashboard() {
         </div>
 
       </div>
+
     </div>
+
   );
+
 }
 
 export default AdminDashboard;
