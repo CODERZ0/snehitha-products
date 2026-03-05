@@ -31,13 +31,11 @@ function AdminDashboard() {
   }, []);
 
   const getAuthHeader = () => {
-
     return {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`
       }
     };
-
   };
 
   // ================= FETCH PRODUCTS =================
@@ -59,9 +57,7 @@ function AdminDashboard() {
   };
 
   useEffect(() => {
-
     fetchProducts();
-
   }, []);
 
   // ================= ADD PRODUCT =================
@@ -69,6 +65,11 @@ function AdminDashboard() {
   const handleAddProduct = async (e) => {
 
     e.preventDefault();
+
+    if (!form.image) {
+      alert("Please select an image");
+      return;
+    }
 
     const formData = new FormData();
 
@@ -84,6 +85,8 @@ function AdminDashboard() {
         formData,
         getAuthHeader()
       );
+
+      alert("Product added successfully ✅");
 
       setForm({
         name: "",
@@ -312,7 +315,7 @@ function AdminDashboard() {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-16 h-16 object-contain"
+                        className="w-16 h-16 object-contain rounded"
                       />
 
                     </td>

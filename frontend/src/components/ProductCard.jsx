@@ -6,8 +6,6 @@ function ProductCard({ product }) {
 
   const [selectedGram, setSelectedGram] = useState(100);
 
-  const API = import.meta.env.VITE_API_URL|| "https://snehitha-products.onrender.com";
-
   const price = ((product.basePrice / 1000) * selectedGram).toFixed(0);
 
   // ================= ADD TO CART =================
@@ -21,10 +19,10 @@ function ProductCard({ product }) {
     const newItem = {
       id: product._id,
       name: product.name,
-      image: product.image,
+      image: product.image, // Cloudinary URL
       quantityKg: quantityKg,
       basePrice: product.basePrice,
-      totalPrice: price,
+      totalPrice: Number(price),
       count: 1
     };
 

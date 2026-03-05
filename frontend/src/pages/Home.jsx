@@ -27,6 +27,8 @@ function Home() {
   const [selectedGrams, setSelectedGrams] = useState({});
   const [cartCount, setCartCount] = useState(0);
 
+  const API = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     fetchProducts();
     updateCartCount();
@@ -34,12 +36,15 @@ function Home() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/products"
-      );
+
+      const res = await axios.get(`${API}/api/products`);
+
       setProducts(res.data);
+
     } catch (error) {
+
       console.log(error);
+
     }
   };
 
@@ -177,15 +182,15 @@ function Home() {
               className="relative bg-white rounded-2xl shadow-md p-6 hover:shadow-2xl transition duration-300"
             >
 
-              {/* OUT OF STOCK BADGE */}
               {!product.active && (
                 <div className="absolute top-4 left-4 bg-red-600 text-white text-xs px-3 py-1 rounded-full">
                   Out of Stock
                 </div>
               )}
 
+              {/* FIXED IMAGE */}
               <img
-                src={`http://localhost:5000/uploads/${product.image}`}
+                src={product.image}
                 alt={product.name}
                 className={`w-full h-48 object-contain mb-4 ${
                   !product.active ? "opacity-50" : ""
@@ -238,8 +243,6 @@ function Home() {
 
       </section>
 
-
-      {/* CHATBOT */}
       <ChatBot />
 
     </div>
