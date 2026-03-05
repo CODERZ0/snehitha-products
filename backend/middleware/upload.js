@@ -1,28 +1,21 @@
 import multer from "multer";
-import path from "path";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "image/jpeg") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only JPG images allowed"), false);
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "snehitha-products",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"]
   }
-};
-
-const upload = multer({
-  storage,
-  fileFilter,
 });
+
+const upload = multer({ storage });
 
 export default upload;
