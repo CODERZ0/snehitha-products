@@ -35,7 +35,7 @@ function Home() {
   const fetchProducts = async () => {
     try {
       const res = await axios.get(
-        "https://YOUR-BACKEND-URL/api/products"
+        "http://localhost:5000/api/products"
       );
       setProducts(res.data);
     } catch (error) {
@@ -92,28 +92,28 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-cream overflow-x-hidden">
+    <div className="min-h-screen bg-cream">
 
       {/* NAVBAR */}
       <nav className="bg-white shadow-md fixed top-0 w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-3">
             <img
               src="/images/hero0.jpg"
               alt="Logo"
-              className="h-8 md:h-9 object-contain"
+              className="h-9 object-contain"
             />
-            <h1 className="text-base md:text-xl font-bold text-brand">
+            <h1 className="text-lg sm:text-xl font-bold text-brand">
               Snehitha Products
             </h1>
           </div>
 
           <Link
             to="/cart"
-            className="relative flex items-center gap-1 md:gap-2 text-brand text-sm md:text-base"
+            className="relative flex items-center gap-2 text-brand"
           >
-            <ShoppingCart size={22} />
+            <ShoppingCart size={24} />
             Cart
 
             {cartCount > 0 && (
@@ -129,17 +129,17 @@ function Home() {
 
 
       {/* HERO */}
-      <section className="bg-brand text-white pt-28 md:pt-32 pb-12 md:pb-16">
+      <section className="bg-brand text-white pt-32 sm:pt-28 pb-16">
 
-        <div className="max-w-7xl mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-10 items-center">
 
           <div>
 
-            <h1 className="text-2xl md:text-5xl font-bold mb-4 md:mb-6">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6">
               Pure & Authentic <br /> Homemade Masalas
             </h1>
 
-            <p className="text-gray-200 text-sm md:text-base max-w-lg">
+            <p className="text-gray-200 max-w-lg">
               Carefully prepared traditional masalas using quality spices,
               delivering rich taste and aroma to every dish.
             </p>
@@ -147,7 +147,7 @@ function Home() {
           </div>
 
           <div className="flex justify-center">
-            <div className="bg-white rounded-2xl p-4 md:p-6 shadow-xl w-full max-w-sm">
+            <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-sm">
               <img
                 src="/images/hero1.jpg"
                 alt="Brand"
@@ -162,47 +162,47 @@ function Home() {
 
 
       {/* PRODUCTS */}
-      <section className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
 
-        <h2 className="text-2xl md:text-3xl font-bold text-brand mb-8 md:mb-12">
+        <h2 className="text-3xl font-bold text-brand mb-12">
           Our Products
         </h2>
 
-        {/* MOBILE OPTIMIZED GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
 
           {products.map((product) => (
 
             <div
               key={product._id}
-              className="relative bg-white rounded-xl md:rounded-2xl shadow-md p-3 md:p-6 hover:shadow-xl transition"
+              className="relative bg-white rounded-2xl shadow-md p-6 hover:shadow-2xl transition duration-300"
             >
 
+              {/* OUT OF STOCK BADGE */}
               {!product.active && (
-                <div className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                <div className="absolute top-4 left-4 bg-red-600 text-white text-xs px-3 py-1 rounded-full">
                   Out of Stock
                 </div>
               )}
 
               <img
-                src={`https://YOUR-BACKEND-URL/uploads/${product.image}`}
+                src={`http://localhost:5000/uploads/${product.image}`}
                 alt={product.name}
-                className={`w-full h-28 md:h-48 object-contain mb-3 ${
+                className={`w-full h-48 object-contain mb-4 ${
                   !product.active ? "opacity-50" : ""
                 }`}
               />
 
-              <h3 className="font-semibold text-sm md:text-lg mb-1 md:mb-2">
+              <h3 className="font-semibold text-lg mb-2">
                 {product.name}
               </h3>
 
-              <p className="text-brand font-bold text-sm md:text-base mb-2 md:mb-3">
+              <p className="text-brand font-bold mb-3">
                 ₹{product.basePrice} / kg
               </p>
 
               <select
                 disabled={!product.active}
-                className="w-full border rounded-lg px-2 md:px-3 py-1 md:py-2 text-sm mb-2 md:mb-3"
+                className="w-full border rounded-lg px-3 py-2 mb-3"
                 onChange={(e) =>
                   handleGramChange(product._id, e.target.value)
                 }
@@ -214,14 +214,14 @@ function Home() {
                 ))}
               </select>
 
-              <p className="text-xs md:text-sm text-gray-500 mb-2 md:mb-3">
+              <p className="text-sm text-gray-500 mb-3">
                 Total: ₹{calculateTotal(product)}
               </p>
 
               <button
                 disabled={!product.active}
                 onClick={() => handleAddToCart(product)}
-                className={`w-full py-2 md:py-3 rounded-lg text-sm md:text-base transition ${
+                className={`w-full py-2 rounded-lg transition ${
                   product.active
                     ? "bg-brand text-white hover:bg-brandHover"
                     : "bg-gray-400 text-white cursor-not-allowed"
@@ -238,6 +238,8 @@ function Home() {
 
       </section>
 
+
+      {/* CHATBOT */}
       <ChatBot />
 
     </div>

@@ -6,7 +6,7 @@ function ProductCard({ product }) {
 
   const [selectedGram, setSelectedGram] = useState(100);
 
-  const API = import.meta.env.VITE_API_URL;
+  const API = import.meta.env.VITE_API_URL|| "https://snehitha-products.onrender.com";
 
   const price = ((product.basePrice / 1000) * selectedGram).toFixed(0);
 
@@ -53,7 +53,7 @@ function ProductCard({ product }) {
       {/* PRODUCT IMAGE */}
 
       <img
-        src={`${API}/uploads/${product.image}`}
+        src={product.image}
         alt={product.name}
         loading="lazy"
         decoding="async"

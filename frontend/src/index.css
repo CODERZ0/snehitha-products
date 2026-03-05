@@ -1,73 +1,54 @@
 @import "tailwindcss";
 
 /* Brand Theme Colors */
-
-:root {
-  --color-brand: #4D0C11;
-  --color-brandHover: #66141A;
-  --color-cream: #FDF6F0;
-  --color-beige: #F3E8DD;
+@theme {
+--color-brand: #4D0C11;
+--color-brandHover: #66141A;
+--color-cream: #FDF6F0;
+--color-beige: #F3E8DD;
 }
 
-/* Smooth scrolling */
-
+/* Smooth scrolling for page navigation */
 html {
-  scroll-behavior: smooth;
+scroll-behavior: smooth;
 }
 
-/* Navbar offset */
-
+/* Fix navbar offset for anchor scrolling */
 section {
-  scroll-margin-top: 100px;
+scroll-margin-top: 100px;
 }
 
 /* Global body settings */
-
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-    "Open Sans", "Helvetica Neue", sans-serif;
+margin: 0;
+font-family: system-ui, -apple-system, BlinkMacSystemFont,
+"Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+"Open Sans", "Helvetica Neue", sans-serif;
 
-  background-color: var(--color-cream);
+background-color: var(--color-cream);
 }
 
-/* Prevent horizontal scroll */
+/* Prevent horizontal scroll on mobile */
 
 * {
   box-sizing: border-box;
+  }
+
+html,
+body {
+overflow-x: hidden;
 }
 
-html, body {
-  overflow-x: hidden;
-}
-
-/* Chatbot scrollbar */
-
+/* Chatbot scrollbar styling */
 .chat-scroll::-webkit-scrollbar {
-  width: 6px;
+width: 6px;
 }
 
 .chat-scroll::-webkit-scrollbar-thumb {
-  background: #bbb;
-  border-radius: 10px;
+background: #bbb;
+border-radius: 10px;
 }
 
 .chat-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Mobile keyboard viewport fix */
-
-.min-safe-screen {
-  min-height: 100dvh;
-}
-
-/* Faster image rendering */
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  image-rendering: -webkit-optimize-contrast;
+background: transparent;
 }

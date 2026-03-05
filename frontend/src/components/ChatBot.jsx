@@ -20,7 +20,20 @@ function ChatBot() {
 
   const lastQuantityRef = useRef(1);
 
-  // Detect quantity from message
+  const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+  // ===== FORMAT WEIGHT =====
+  const formatWeight = (kg) => {
+    if (kg >= 1) return `${kg} kg`;
+    return `${kg * 1000} g`;
+  };
+
+  // ===== CALCULATE PRICE =====
+  const calculatePrice = (product, quantityKg) => {
+    return Math.round(product.basePrice * quantityKg);
+  };
+
+  // ===== DETECT QUANTITY =====
   const extractQuantity = (text) => {
 
     const gramMatch = text.match(/(\d+)\s*g/i);
@@ -37,7 +50,7 @@ function ChatBot() {
     return 1;
   };
 
-  // Detect manual scrolling
+  // ===== SCROLL DETECTION =====
   const handleScroll = () => {
 
     if (!scrollContainerRef.current) return;
@@ -51,7 +64,7 @@ function ChatBot() {
 
   };
 
-  // Auto scroll
+  // ===== AUTO SCROLL =====
   useEffect(() => {
 
     if (!isUserScrolling) {
@@ -72,7 +85,7 @@ function ChatBot() {
 
   }, [chat, typing, isUserScrolling]);
 
-  // Add to Cart
+  // ===== ADD TO CART =====
   const addToCart = (product, quantityKg) => {
 
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -84,7 +97,7 @@ function ChatBot() {
       image: product.image,
       quantityKg: quantityKg,
       basePrice: product.basePrice,
-      totalPrice: product.basePrice * quantityKg,
+      totalPrice: calculatePrice(product, quantityKg),
       count: 1
 
     };
@@ -93,10 +106,11 @@ function ChatBot() {
 
     localStorage.setItem("cart", JSON.stringify(cart));
 
-    alert(`${product.name} (${quantityKg * 1000}g) added to cart ✅`);
+    alert(`${product.name} (${formatWeight(quantityKg)}) added to cart ✅`);
 
   };
 
+  // ===== SEND MESSAGE =====
   const sendMessage = async () => {
 
     if (!message.trim()) return;
@@ -118,7 +132,7 @@ function ChatBot() {
     try {
 
       const res = await axios.post(
-        "http://localhost:5000/api/chat",
+        `${API}/api/chat`,
         { message: userMessage.text }
       );
 
@@ -152,7 +166,7 @@ function ChatBot() {
   return (
     <>
 
-      {/* Floating Chat Button */}
+      {/* Floating Button */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-5 right-5 bg-brand text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl z-50 transition-transform active:scale-90"
@@ -186,7 +200,6 @@ function ChatBot() {
             ref={scrollContainerRef}
             onScroll={handleScroll}
             className="flex-1 overflow-y-auto p-4 bg-[#ece5dd] flex flex-col gap-3 overscroll-contain"
-            style={{ WebkitOverflowScrolling: "touch" }}
           >
 
             {chat.map((c, i) => (
@@ -202,7 +215,7 @@ function ChatBot() {
 
                 <div className="max-w-[85%]">
 
-                  {/* Message bubble */}
+                  {/* Message */}
                   <div
                     className={`px-4 py-2 rounded-2xl shadow-sm text-sm break-words ${
                       c.sender === "user"
@@ -219,7 +232,7 @@ function ChatBot() {
                     <div className="mt-2 bg-white p-3 rounded-lg shadow w-[210px]">
 
                       <img
-                        src={`http://localhost:5000/uploads/${c.product.image}`}
+                        src={`${API}/uploads/${c.product.image}`}
                         alt={c.product.name}
                         className="w-full h-28 object-contain"
                       />
@@ -229,11 +242,15 @@ function ChatBot() {
                       </h4>
 
                       <p className="text-sm text-gray-600">
-                        {(c.quantity || 1) * 1000} g
+                        {formatWeight(c.quantity || 1)}
+                      </p>
+
+                      <p className="text-xs text-gray-500">
+                        ₹{c.product.basePrice} / kg
                       </p>
 
                       <p className="text-brand font-bold text-sm">
-                        ₹{c.product.basePrice * (c.quantity || 1)}
+                        ₹{calculatePrice(c.product, c.quantity || 1)}
                       </p>
 
                       <button
@@ -270,10 +287,10 @@ function ChatBot() {
           </div>
 
           {/* Input */}
-          <div className="p-3 bg-white border-t flex gap-2 shrink-0 pb-safe">
+          <div className="p-3 bg-white border-t flex gap-2 shrink-0">
 
             <input
-              className="flex-1 p-3 bg-gray-100 rounded-full px-4 outline-none text-base border border-transparent focus:border-brand/30"
+              className="flex-1 p-3 bg-gray-100 rounded-full px-4 outline-none text-base"
               placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -285,7 +302,7 @@ function ChatBot() {
             <button
               onClick={sendMessage}
               disabled={!message.trim()}
-              className="bg-brand disabled:opacity-50 text-white w-12 h-12 rounded-full flex items-center justify-center transition-all hover:shadow-lg active:scale-95"
+              className="bg-brand disabled:opacity-50 text-white w-12 h-12 rounded-full flex items-center justify-center"
             >
               <span className="rotate-90">▲</span>
             </button>

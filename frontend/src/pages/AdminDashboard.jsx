@@ -30,7 +30,6 @@ function AdminDashboard() {
 
   }, []);
 
-
   const getAuthHeader = () => {
 
     return {
@@ -40,7 +39,6 @@ function AdminDashboard() {
     };
 
   };
-
 
   // ================= FETCH PRODUCTS =================
 
@@ -60,13 +58,11 @@ function AdminDashboard() {
 
   };
 
-
   useEffect(() => {
 
     fetchProducts();
 
   }, []);
-
 
   // ================= ADD PRODUCT =================
 
@@ -100,12 +96,13 @@ function AdminDashboard() {
 
     } catch (error) {
 
+      console.log(error);
+
       alert("Error adding product");
 
     }
 
   };
-
 
   // ================= TOGGLE STOCK =================
 
@@ -129,7 +126,6 @@ function AdminDashboard() {
 
   };
 
-
   // ================= UPDATE PRICE =================
 
   const updatePrice = async (id, newPrice) => {
@@ -151,7 +147,6 @@ function AdminDashboard() {
     }
 
   };
-
 
   // ================= DELETE PRODUCT =================
 
@@ -176,7 +171,6 @@ function AdminDashboard() {
 
   };
 
-
   // ================= LOGOUT =================
 
   const logout = () => {
@@ -186,7 +180,6 @@ function AdminDashboard() {
     navigate("/admin");
 
   };
-
 
   return (
 
@@ -212,7 +205,6 @@ function AdminDashboard() {
           </button>
 
         </div>
-
 
         {/* ADD PRODUCT */}
 
@@ -263,7 +255,7 @@ function AdminDashboard() {
 
             <input
               type="file"
-              accept=".jpg,.png"
+              accept="image/*"
               required
               onChange={(e) =>
                 setForm({ ...form, image: e.target.files[0] })
@@ -281,7 +273,6 @@ function AdminDashboard() {
           </form>
 
         </div>
-
 
         {/* PRODUCT TABLE */}
 
@@ -319,7 +310,7 @@ function AdminDashboard() {
                     <td className="p-3">
 
                       <img
-                        src={`${API}/uploads/${product.image}`}
+                        src={product.image}
                         alt={product.name}
                         className="w-16 h-16 object-contain"
                       />
