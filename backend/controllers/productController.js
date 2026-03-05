@@ -14,26 +14,29 @@ export const getProducts = async (req, res) => {
 // ================= ADD PRODUCT =================
 export const addProduct = async (req, res) => {
   try {
-    // Debugging logs to see what's reaching the server
-    console.log("Incoming Data:", req.body);
-    console.log("Incoming File:", req.file);
+    // 1. Log incoming data to see what Multer processed
+    console.log("--- NEW PRODUCT ATTEMPT ---");
+    console.log("Body Data:", req.body);
+    console.log("File Data:", req.file ? `Received: ${req.file.originalname}` : "NO FILE RECEIVED");
 
+    // 2. Validate file existence
     if (!req.file) {
       return res.status(400).json({ message: "Product image is required" });
     }
 
     const { name, category, basePrice } = req.body;
 
+    // 3. Validate required fields
     if (!name || !category || !basePrice) {
       return res.status(400).json({ message: "Missing product details (name, category, or price)" });
     }
 
+    // 4. Create and Save Product
     const product = new Product({
       name,
       category,
       basePrice: Number(basePrice),
-      // IMPORTANT: Cloudinary stores the URL in req.file.path
-      image: req.file.path, 
+      image: req.file.path, // Cloudinary URL provided by Multer-Storage-Cloudinary
       active: true
     });
 
@@ -42,9 +45,18 @@ export const addProduct = async (req, res) => {
     res.status(201).json(product);
 
   } catch (error) {
-    console.error("ADD PRODUCT ERROR:", error); // Logs full error to Render
+    // FIX: Detailed logging to reveal the true error in Render logs
+    console.error("❌ ADD PRODUCT CRASHED:");
+    console.error("Error Message:", error.message);
+    console.error("Stack Trace:", error.stack);
+    
+    // If it's a Cloudinary error, it will be hidden inside the error object
+    if (error.cloudinary) {
+      console.error("Cloudinary Specific Error:", JSON.stringify(error.cloudinary, null, 2));
+    }
+
     res.status(500).json({ 
-      message: "Error adding product", 
+      message: "Server Error: Could not add product", 
       error: error.message 
     });
   }
@@ -59,7 +71,6 @@ export const updateProduct = async (req, res) => {
     if (req.body.name) updateData.name = req.body.name;
     if (req.body.category) updateData.category = req.body.category;
 
-    // If a new image is uploaded during update
     if (req.file) {
       updateData.image = req.file.path;
     }
@@ -89,7 +100,6 @@ export const deleteProduct = async (req, res) => {
 };
 
 // ================= SEED PRODUCTS =================
-// Note: These images are placeholders; new uploads go to Cloudinary
 export const seedProducts = async (req, res) => {
   try {
     await Product.deleteMany();
