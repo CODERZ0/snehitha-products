@@ -1,19 +1,16 @@
 import Product from "../models/Product.js";
 
-
 // ================= GET ALL PRODUCTS =================
 export const getProducts = async (req, res) => {
   try {
 
-    const products = await Product
-      .find()
-      .sort({ createdAt: -1 });
+    const products = await Product.find().sort({ createdAt: -1 });
 
     res.status(200).json(products);
 
   } catch (error) {
 
-    console.error("GET PRODUCTS ERROR:", error);
+    console.error("GET PRODUCTS ERROR:", error.message);
 
     res.status(500).json({
       message: "Error fetching products"
@@ -25,9 +22,11 @@ export const getProducts = async (req, res) => {
 
 
 // ================= ADD PRODUCT =================
-// ================= ADD PRODUCT =================
 export const addProduct = async (req, res) => {
   try {
+
+    console.log("BODY:", JSON.stringify(req.body, null, 2));
+    console.log("FILE:", req.file ? "Image received" : "No image");
 
     if (!req.file) {
       return res.status(400).json({
@@ -48,7 +47,7 @@ export const addProduct = async (req, res) => {
       category,
       basePrice: Number(basePrice),
 
-      // CLOUDINARY IMAGE URL
+      // Cloudinary image URL
       image: req.file.path,
 
       active: true
@@ -60,7 +59,7 @@ export const addProduct = async (req, res) => {
 
   } catch (error) {
 
-    console.error("ADD PRODUCT ERROR:", error);
+    console.error("ADD PRODUCT ERROR:", error.message);
 
     res.status(500).json({
       message: "Error adding product",
@@ -69,6 +68,8 @@ export const addProduct = async (req, res) => {
 
   }
 };
+
+
 
 // ================= UPDATE PRODUCT =================
 export const updateProduct = async (req, res) => {
@@ -84,18 +85,17 @@ export const updateProduct = async (req, res) => {
       updateData.active = Boolean(req.body.active);
     }
 
-    const updatedProduct =
-      await Product.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true }
-      );
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
 
     res.status(200).json(updatedProduct);
 
   } catch (error) {
 
-    console.error("UPDATE PRODUCT ERROR:", error);
+    console.error("UPDATE PRODUCT ERROR:", error.message);
 
     res.status(500).json({
       message: "Error updating product"
@@ -118,7 +118,7 @@ export const deleteProduct = async (req, res) => {
 
   } catch (error) {
 
-    console.error("DELETE PRODUCT ERROR:", error);
+    console.error("DELETE PRODUCT ERROR:", error.message);
 
     res.status(500).json({
       message: "Error deleting product"
@@ -150,9 +150,7 @@ export const seedProducts = async (req, res) => {
       { name: "Red Chilli Powder", category: "powders", basePrice: 480, image: "red-chilli-powder.jpg", active: true },
       { name: "Roasted Coriander Powder", category: "powders", basePrice: 320, image: "roasted-coriander.jpg", active: true },
       { name: "Sambar Powder", category: "powders", basePrice: 300, image: "sambar-powder.jpg", active: true },
-      { name: "Turmeric Powder", category: "powders", basePrice: 260, image: "turmeric-powder.jpg", active: true },
-
-      
+      { name: "Turmeric Powder", category: "powders", basePrice: 260, image: "turmeric-powder.jpg", active: true }
 
     ];
 
@@ -164,7 +162,7 @@ export const seedProducts = async (req, res) => {
 
   } catch (error) {
 
-    console.error("SEED PRODUCTS ERROR:", error);
+    console.error("SEED PRODUCTS ERROR:", error.message);
 
     res.status(500).json({
       message: "Seeding failed"
