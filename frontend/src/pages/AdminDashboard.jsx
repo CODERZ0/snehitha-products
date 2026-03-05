@@ -1,0 +1,290 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import AdminSidebar from "../components/AdminSidebar";
+import { useNavigate } from "react-router-dom";
+
+function AdminDashboard() {
+  const [products, setProducts] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    category: "masalas",
+    basePrice: "",
+    image: null,
+  });
+
+  const navigate = useNavigate();
+
+  // 🔐 PROTECT ROUTE
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      navigate("/admin");
+    }
+  }, []);
+
+  const getAuthHeader = () => {
+    return {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    };
+  };
+
+  const fetchProducts = async () => {
+    const res = await axios.get(
+      "http://localhost:5000/api/products"
+    );
+    setProducts(res.data);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // ================= ADD PRODUCT =================
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("category", form.category);
+    formData.append("basePrice", form.basePrice);
+    formData.append("image", form.image);
+
+    await axios.post(
+      "http://localhost:5000/api/products",
+      formData,
+      getAuthHeader()
+    );
+
+    setForm({
+      name: "",
+      category: "masalas",
+      basePrice: "",
+      image: null,
+    });
+
+    fetchProducts();
+  };
+
+  // ================= TOGGLE ACTIVE =================
+  const toggleActive = async (product) => {
+    await axios.put(
+      `http://localhost:5000/api/products/${product._id}`,
+      { active: !product.active },
+      getAuthHeader()
+    );
+    fetchProducts();
+  };
+
+  // ================= UPDATE PRICE =================
+  const updatePrice = async (id, newPrice) => {
+    await axios.put(
+      `http://localhost:5000/api/products/${id}`,
+      { basePrice: newPrice },
+      getAuthHeader()
+    );
+    fetchProducts();
+  };
+
+  // ================= DELETE PRODUCT =================
+  const deleteProduct = async (id) => {
+    await axios.delete(
+      `http://localhost:5000/api/products/${id}`,
+      getAuthHeader()
+    );
+    fetchProducts();
+  };
+
+  const logout = () => {
+    localStorage.removeItem("adminToken");
+    navigate("/admin");
+  };
+
+  return (
+    <div className="flex bg-cream min-h-screen">
+
+      <AdminSidebar />
+
+      <div className="ml-64 p-10 w-full">
+
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl font-bold text-brand">
+            Product Management
+          </h1>
+
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* ADD PRODUCT FORM */}
+        <div className="bg-white p-6 rounded-2xl shadow-lg mb-10">
+
+          <h2 className="text-xl font-semibold mb-6">
+            Add New Product
+          </h2>
+
+          <form
+            onSubmit={handleAddProduct}
+            className="grid grid-cols-2 gap-6"
+          >
+
+            <input
+              type="text"
+              placeholder="Product Name"
+              required
+              value={form.name}
+              onChange={(e) =>
+                setForm({ ...form, name: e.target.value })
+              }
+              className="border p-3 rounded-lg"
+            />
+
+            <select
+              value={form.category}
+              onChange={(e) =>
+                setForm({ ...form, category: e.target.value })
+              }
+              className="border p-3 rounded-lg"
+            >
+              <option value="masalas">Masalas</option>
+              <option value="powders">Powders</option>
+              <option value="other">Other</option>
+            </select>
+
+            <input
+              type="number"
+              placeholder="Price Per KG"
+              required
+              value={form.basePrice}
+              onChange={(e) =>
+                setForm({ ...form, basePrice: e.target.value })
+              }
+              className="border p-3 rounded-lg"
+            />
+
+            <input
+              type="file"
+              accept=".jpg"
+              required
+              onChange={(e) =>
+                setForm({ ...form, image: e.target.files[0] })
+              }
+              className="border p-3 rounded-lg"
+            />
+
+            <button
+              type="submit"
+              className="col-span-2 bg-brand text-white py-3 rounded-lg hover:bg-brandHover transition"
+            >
+              Add Product
+            </button>
+
+          </form>
+        </div>
+
+        {/* PRODUCT TABLE */}
+        <div className="bg-white p-6 rounded-2xl shadow-lg">
+
+          <h2 className="text-xl font-semibold mb-6">
+            All Products
+          </h2>
+
+          <div className="overflow-x-auto">
+
+            <table className="w-full text-left border-collapse">
+
+              <thead>
+                <tr className="border-b">
+                  <th className="p-3">Image</th>
+                  <th className="p-3">Name</th>
+                  <th className="p-3">Category</th>
+                  <th className="p-3">Price/KG</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product._id} className="border-b">
+
+                    <td className="p-3">
+                      <img
+                        src={`http://localhost:5000/uploads/${product.image}`}
+                        alt={product.name}
+                        className="w-16 h-16 object-contain"
+                      />
+                    </td>
+
+                    <td className="p-3">{product.name}</td>
+
+                    <td className="p-3 capitalize">
+                      {product.category}
+                    </td>
+
+                    <td className="p-3">
+                      <input
+                        type="number"
+                        defaultValue={product.basePrice}
+                        onBlur={(e) =>
+                          updatePrice(product._id, e.target.value)
+                        }
+                        className="border p-2 rounded w-24"
+                      />
+                    </td>
+
+                    <td className="p-3">
+                      <span
+                        className={
+                          product.active
+                            ? "text-green-600 font-semibold"
+                            : "text-red-500 font-semibold"
+                        }
+                      >
+                        {product.active
+                          ? "Available"
+                          : "Out of Stock"}
+                      </span>
+                    </td>
+
+                    <td className="p-3 flex gap-4">
+
+                      <button
+                        onClick={() => toggleActive(product)}
+                        className="text-blue-600"
+                      >
+                        Toggle
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          deleteProduct(product._id)
+                        }
+                        className="text-red-500"
+                      >
+                        Delete
+                      </button>
+
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+export default AdminDashboard;
