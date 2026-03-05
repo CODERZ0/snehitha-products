@@ -10,9 +10,12 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "snehitha-products",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"]
+  params: async (req, file) => {
+    return {
+      folder: "snehitha-products",
+      format: file.mimetype.split("/")[1], // jpg/png/webp
+      public_id: Date.now() + "-" + file.originalname
+    };
   }
 });
 
