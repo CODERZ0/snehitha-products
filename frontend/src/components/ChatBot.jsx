@@ -14,7 +14,7 @@ function ChatBot() {
   const [chat, setChat] = useState([
     {
       sender: "bot",
-      text: "Hello 👋 I am Snehitha AI. Ask me about spices, masalas, cooking suggestions or ordering."
+      text: "Hello 👋 I Snehitha here tell me sir/madam what you are looking for"
     }
   ]);
 
@@ -22,35 +22,26 @@ function ChatBot() {
 
   const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // ===== FORMAT WEIGHT =====
   const formatWeight = (kg) => {
     if (kg >= 1) return `${kg} kg`;
     return `${kg * 1000} g`;
   };
 
-  // ===== CALCULATE PRICE =====
   const calculatePrice = (product, quantityKg) => {
     return Math.round(product.basePrice * quantityKg);
   };
 
-  // ===== DETECT QUANTITY =====
   const extractQuantity = (text) => {
 
     const gramMatch = text.match(/(\d+)\s*g/i);
     const kgMatch = text.match(/(\d+(\.\d+)?)\s*kg/i);
 
-    if (gramMatch) {
-      return parseInt(gramMatch[1]) / 1000;
-    }
-
-    if (kgMatch) {
-      return parseFloat(kgMatch[1]);
-    }
+    if (gramMatch) return parseInt(gramMatch[1]) / 1000;
+    if (kgMatch) return parseFloat(kgMatch[1]);
 
     return 1;
   };
 
-  // ===== SCROLL DETECTION =====
   const handleScroll = () => {
 
     if (!scrollContainerRef.current) return;
@@ -64,28 +55,18 @@ function ChatBot() {
 
   };
 
-  // ===== AUTO SCROLL =====
   useEffect(() => {
 
     if (!isUserScrolling) {
 
-      const scrollToBottom = () => {
-
-        chatEndRef.current?.scrollIntoView({
-          behavior: "smooth"
-        });
-
-      };
-
-      const timeoutId = setTimeout(scrollToBottom, 100);
-
-      return () => clearTimeout(timeoutId);
+      chatEndRef.current?.scrollIntoView({
+        behavior: "smooth"
+      });
 
     }
 
-  }, [chat, typing, isUserScrolling]);
+  }, [chat, typing]);
 
-  // ===== ADD TO CART =====
   const addToCart = (product, quantityKg) => {
 
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -110,7 +91,6 @@ function ChatBot() {
 
   };
 
-  // ===== SEND MESSAGE =====
   const sendMessage = async () => {
 
     if (!message.trim()) return;
@@ -147,7 +127,7 @@ function ChatBot() {
 
     }
 
-    catch (error) {
+    catch {
 
       setChat(prev => [
         ...prev,
@@ -166,40 +146,37 @@ function ChatBot() {
   return (
     <>
 
-      {/* Floating Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 bg-brand text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl z-50 transition-transform active:scale-90"
+        className="fixed bottom-5 right-5 bg-brand text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl z-50"
       >
         💬
       </button>
 
       {open && (
 
-        <div className="fixed bottom-0 right-0 sm:bottom-24 sm:right-3 md:right-6 w-full sm:w-[95%] sm:max-w-sm h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[600px] bg-white sm:rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
+        <div className="fixed bottom-20 right-4 w-[90%] max-w-[360px] h-[480px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
 
-          {/* Header */}
-          <div className="bg-brand text-white p-4 flex justify-between items-center shadow-md shrink-0">
+          <div className="bg-brand text-white p-4 flex justify-between items-center">
 
             <div className="flex items-center gap-2">
               <span className="text-xl">🤖</span>
-              <div className="font-semibold text-base">Snehitha AI</div>
+              <div className="font-semibold">Snehitha AI</div>
             </div>
 
             <button
               onClick={() => setOpen(false)}
-              className="hover:bg-white/20 w-10 h-10 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-lg"
+              className="text-lg"
             >
               ✕
             </button>
 
           </div>
 
-          {/* Chat Area */}
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
-            className="flex-1 overflow-y-auto p-4 bg-[#ece5dd] flex flex-col gap-3 overscroll-contain"
+            className="flex-1 overflow-y-auto p-4 bg-[#ece5dd] flex flex-col gap-3"
           >
 
             {chat.map((c, i) => (
@@ -215,38 +192,40 @@ function ChatBot() {
 
                 <div className="max-w-[85%]">
 
-                  {/* Message */}
                   <div
-                    className={`px-4 py-2 rounded-2xl shadow-sm text-sm break-words ${
+                    className={`px-4 py-2 rounded-2xl shadow text-sm ${
                       c.sender === "user"
-                        ? "bg-[#dcf8c6] rounded-tr-none"
-                        : "bg-white rounded-tl-none border border-gray-100"
+                        ? "bg-[#dcf8c6]"
+                        : "bg-white"
                     }`}
                   >
                     {c.text}
                   </div>
 
-                  {/* Product Card */}
                   {c.product && (
 
-                    <div className="mt-2 bg-white p-3 rounded-lg shadow w-[210px]">
+                    <div className="mt-2 bg-white p-3 rounded-lg shadow w-[200px]">
 
                       <img
-                        src={`${API}/uploads/${c.product.image}`}
+                        src={
+                          c.product.image?.startsWith("http")
+                            ? c.product.image
+                            : `${API}/uploads/${c.product.image}`
+                        }
                         alt={c.product.name}
-                        className="w-full h-28 object-contain"
+                        className="w-full h-24 object-contain"
                       />
 
                       <h4 className="font-semibold text-sm mt-1">
                         {c.product.name}
                       </h4>
 
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-gray-600">
                         {formatWeight(c.quantity || 1)}
                       </p>
 
                       <p className="text-xs text-gray-500">
-                        ₹{c.product.basePrice} / kg
+                        ₹{c.product.basePrice}/kg
                       </p>
 
                       <p className="text-brand font-bold text-sm">
@@ -272,25 +251,20 @@ function ChatBot() {
 
             {typing && (
 
-              <div className="flex justify-start">
-
-                <div className="bg-white px-4 py-2 rounded-2xl rounded-tl-none shadow-sm text-xs text-gray-500 italic">
-                  Snehitha is typing...
-                </div>
-
+              <div className="text-xs text-gray-500 italic">
+                Snehitha is typing...
               </div>
 
             )}
 
-            <div ref={chatEndRef} className="h-4 shrink-0" />
+            <div ref={chatEndRef}></div>
 
           </div>
 
-          {/* Input */}
-          <div className="p-3 bg-white border-t flex gap-2 shrink-0">
+          <div className="p-3 bg-white border-t flex gap-2">
 
             <input
-              className="flex-1 p-3 bg-gray-100 rounded-full px-4 outline-none text-base"
+              className="flex-1 p-3 bg-gray-100 rounded-full px-4 outline-none text-sm"
               placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -302,9 +276,9 @@ function ChatBot() {
             <button
               onClick={sendMessage}
               disabled={!message.trim()}
-              className="bg-brand disabled:opacity-50 text-white w-12 h-12 rounded-full flex items-center justify-center"
+              className="bg-brand disabled:opacity-50 text-white w-10 h-10 rounded-full flex items-center justify-center"
             >
-              <span className="rotate-90">▲</span>
+              ▲
             </button>
 
           </div>

@@ -156,28 +156,28 @@ Pincode: ${form.pincode}
 
   return (
 
-    <div className="min-h-screen bg-cream px-4 sm:px-6 lg:px-8 py-10">
+    <div className="min-h-screen bg-cream px-4 sm:px-8 py-10">
 
       {/* HEADER */}
 
       <div className="max-w-7xl mx-auto mb-8 flex justify-between items-center">
 
-        <Link to="/home" className="text-brand font-medium text-sm sm:text-base">
+        <Link to="/home" className="text-brand font-medium">
           ← Back
         </Link>
 
-        <h2 className="text-lg sm:text-2xl font-bold text-brand">
+        <h2 className="text-xl sm:text-2xl font-bold text-brand">
           Your Cart
         </h2>
 
       </div>
 
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
 
         {/* LEFT SIDE */}
 
-        <div className="lg:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-6">
 
           {cartItems.length === 0 && (
 
@@ -198,6 +198,7 @@ Pincode: ${form.pincode}
 
                 <div className="flex gap-4 items-center">
 
+                  {/* FIXED IMAGE */}
                   <img
                     src={
                       item.image?.startsWith("http")
@@ -269,7 +270,7 @@ Pincode: ${form.pincode}
               Delivery Details
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4">
 
               <input
                 placeholder="Full Name"
@@ -319,7 +320,7 @@ Pincode: ${form.pincode}
 
         {/* RIGHT SIDE */}
 
-        <div className="bg-white rounded-xl shadow-lg p-6 h-fit lg:sticky lg:top-24 border border-gray-100">
+        <div className="bg-white rounded-xl shadow-lg p-6 h-fit sticky top-24 border border-gray-100">
 
           <h3 className="text-xl font-semibold mb-6">
             Order Summary

@@ -6,85 +6,123 @@ function Landing() {
 
       {/* ================= NAVBAR ================= */}
       <nav className="fixed top-0 w-full bg-white shadow-md z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+
+        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
 
           {/* Logo + Title */}
-          <div className="flex items-center gap-3">
-            <img src="/images/hero0.jpg" alt="Logo" className="h-8 sm:h-10 object-contain" />
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-brand">
+          <div className="flex items-center gap-2">
+
+            <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+              <img
+                src="/images/hero0.jpg"
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            <h1 className="text-sm sm:text-lg font-bold text-brand">
               Snehitha Products
             </h1>
+
           </div>
 
           {/* Menu */}
-          <div className="hidden md:flex gap-8 font-medium text-gray-700">
-            <a href="#home" className="hover:text-brand">Home</a>
-            <a href="#about" className="hover:text-brand">About</a>
-            <a href="#products" className="hover:text-brand">Products</a>
-            <a href="#contact" className="hover:text-brand">Contact</a>
+          <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-gray-700">
+
+            <a href="#home" className="hover:text-brand">
+              Home
+            </a>
+
+            <a href="#about" className="hover:text-brand">
+              About
+            </a>
+
+            <a href="#products" className="hover:text-brand">
+              Products
+            </a>
+
+            <a href="#contact" className="hover:text-brand">
+              Contact
+            </a>
+
           </div>
 
         </div>
+
       </nav>
+
 
       {/* ================= HERO SECTION ================= */}
       <section
         id="home"
-        className="pt-24 sm:pt-28 min-h-screen bg-brand text-white flex items-center"
+        className="bg-brand text-white pt-24 pb-10"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
 
-          {/* LEFT SIDE */}
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-2 gap-6 items-center">
+
+          {/* TEXT */}
           <div>
-            <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-              Pure & Authentic <br />
-              Homemade Masalas
+
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold mb-3">
+              Pure & Authentic Homemade Masalas
             </h2>
 
-            <p className="text-sm sm:text-base md:text-lg text-gray-200 mb-8 max-w-lg">
+            <p className="text-sm sm:text-base text-gray-200 mb-4">
               Carefully prepared traditional masalas using quality spices,
               delivering rich taste and aroma to every dish.
             </p>
 
             <Link to="/home">
-              <button className="bg-white text-brand px-6 py-3 rounded-lg font-semibold shadow hover:scale-105 transition">
+              <button className="bg-white text-brand px-4 py-2 rounded-lg font-semibold shadow text-sm">
                 Shop Now
               </button>
             </Link>
 
           </div>
 
-          {/* RIGHT SIDE */}
+
+          {/* LOGO */}
           <div className="flex justify-center">
-            <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl w-full max-w-sm md:max-w-md">
+
+            <div className="bg-white rounded-xl p-3 shadow-md w-full max-w-[180px] sm:max-w-xs">
+
               <img
                 src="/images/hero1.jpg"
                 alt="Brand"
                 className="w-full object-contain"
               />
+
             </div>
+
           </div>
 
         </div>
+
       </section>
 
+
       {/* ================= ABOUT SECTION ================= */}
-      <section id="about" className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
+      <section id="about" className="py-10 px-4 bg-white">
+
         <div className="max-w-6xl mx-auto">
+
           <img
             src="/images/hero2.jpg"
             alt="About"
             className="w-full rounded-xl shadow-lg"
           />
+
         </div>
+
       </section>
 
+
       {/* ================= PRODUCTS SECTION ================= */}
-      <section id="products" className="py-16 sm:py-24 bg-gray-100 space-y-16 sm:space-y-24">
+      <section id="products" className="py-10 bg-gray-100 space-y-10">
 
-        {[3, 4, 5, 6, 7].map((num) => (
+        {[3,4,5,6,7].map((num) => (
 
-          <div key={num} className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div key={num} className="max-w-6xl mx-auto px-4">
 
             <div className="group overflow-hidden rounded-2xl shadow-xl transition duration-500">
 
@@ -102,15 +140,20 @@ function Landing() {
 
       </section>
 
+
       {/* ================= CONTACT SECTION ================= */}
-      <section id="contact" className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
+      <section id="contact" className="py-10 px-4 bg-white">
+
         <div className="max-w-6xl mx-auto">
+
           <img
             src="/images/hero8.jpg"
             alt="Contact"
             className="w-full rounded-xl shadow-lg"
           />
+
         </div>
+
       </section>
 
     </div>

@@ -18,8 +18,6 @@ function AdminDashboard() {
 
   const API = import.meta.env.VITE_API_URL;
 
-  // ================= PROTECT ADMIN ROUTE =================
-
   useEffect(() => {
 
     const token = localStorage.getItem("adminToken");
@@ -37,8 +35,6 @@ function AdminDashboard() {
       }
     };
   };
-
-  // ================= FETCH PRODUCTS =================
 
   const fetchProducts = async () => {
 
@@ -59,8 +55,6 @@ function AdminDashboard() {
   useEffect(() => {
     fetchProducts();
   }, []);
-
-  // ================= ADD PRODUCT =================
 
   const handleAddProduct = async (e) => {
 
@@ -105,15 +99,12 @@ function AdminDashboard() {
     } catch (error) {
 
       console.log("ADD PRODUCT ERROR:", error);
-      console.log("SERVER RESPONSE:", error?.response?.data);
 
       alert(error?.response?.data?.message || "Error adding product");
 
     }
 
   };
-
-  // ================= TOGGLE STOCK =================
 
   const toggleActive = async (product) => {
 
@@ -136,8 +127,6 @@ function AdminDashboard() {
 
   };
 
-  // ================= UPDATE PRICE =================
-
   const updatePrice = async (id, newPrice) => {
 
     try {
@@ -158,8 +147,6 @@ function AdminDashboard() {
     }
 
   };
-
-  // ================= DELETE PRODUCT =================
 
   const deleteProduct = async (id) => {
 
@@ -183,8 +170,6 @@ function AdminDashboard() {
 
   };
 
-  // ================= LOGOUT =================
-
   const logout = () => {
 
     localStorage.removeItem("adminToken");
@@ -200,8 +185,6 @@ function AdminDashboard() {
       <AdminSidebar />
 
       <div className="w-full md:ml-64 p-4 sm:p-6 md:p-10">
-
-        {/* HEADER */}
 
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
 
@@ -294,20 +277,20 @@ function AdminDashboard() {
             All Products
           </h2>
 
-          <div className="overflow-x-auto">
+          <div className="w-full overflow-x-auto">
 
-            <table className="min-w-[700px] w-full text-left border-collapse">
+            <table className="min-w-[900px] w-full text-left">
 
-              <thead>
+              <thead className="border-b bg-gray-50">
 
-                <tr className="border-b">
+                <tr>
 
-                  <th className="p-3">Image</th>
-                  <th className="p-3">Name</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Price/KG</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Actions</th>
+                  <th className="p-4">Image</th>
+                  <th className="p-4 w-[280px]">Name</th>
+                  <th className="p-4">Category</th>
+                  <th className="p-4">Price/KG</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Actions</th>
 
                 </tr>
 
@@ -317,29 +300,50 @@ function AdminDashboard() {
 
                 {products.map((product) => (
 
-                  <tr key={product._id} className="border-b">
+                  <tr
+                    key={product._id}
+                    className="border-b h-[95px]"
+                  >
 
-                    <td className="p-3">
+                    {/* IMAGE */}
+                    <td className="p-4">
 
-                      <img
-                        src={
-                          product.image?.startsWith("http")
-                            ? product.image
-                            : `${API}/uploads/${product.image}`
-                        }
-                        alt={product.name}
-                        className="w-16 h-16 object-contain rounded"
-                      />
+                      <div className="w-[70px] h-[70px] flex items-center justify-center">
+
+                        <img
+                          src={
+                            product.image?.startsWith("http")
+                              ? product.image
+                              : `${API}/uploads/${product.image}`
+                          }
+                          alt={product.name}
+                          className="max-w-[60px] max-h-[60px] object-contain"
+                        />
+
+                      </div>
 
                     </td>
 
-                    <td className="p-3">{product.name}</td>
+                    {/* NAME */}
+                    <td className="p-4">
 
-                    <td className="p-3 capitalize">
+                      <div className="h-[48px] flex items-center overflow-hidden">
+
+                        <span className="line-clamp-2">
+                          {product.name}
+                        </span>
+
+                      </div>
+
+                    </td>
+
+                    {/* CATEGORY */}
+                    <td className="p-4 capitalize">
                       {product.category}
                     </td>
 
-                    <td className="p-3">
+                    {/* PRICE */}
+                    <td className="p-4">
 
                       <input
                         type="number"
@@ -352,7 +356,8 @@ function AdminDashboard() {
 
                     </td>
 
-                    <td className="p-3">
+                    {/* STATUS */}
+                    <td className="p-4">
 
                       <span
                         className={
@@ -368,22 +373,33 @@ function AdminDashboard() {
 
                     </td>
 
-                    <td className="p-3 flex gap-4">
+                    {/* ACTIONS */}
+                    <td className="p-4 flex items-center gap-6">
 
                       <button
                         onClick={() => toggleActive(product)}
-                        className="text-blue-600"
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full ${
+                          product.active
+                            ? "bg-green-500"
+                            : "bg-gray-400"
+                        }`}
                       >
-                        Toggle
+                        <span
+                          className={`inline-block h-5 w-5 transform rounded-full bg-white ${
+                            product.active
+                              ? "translate-x-5"
+                              : "translate-x-1"
+                          }`}
+                        />
                       </button>
 
                       <button
                         onClick={() =>
                           deleteProduct(product._id)
                         }
-                        className="text-red-500"
+                        className="text-red-500 text-lg hover:text-red-700"
                       >
-                        Delete
+                        🗑
                       </button>
 
                     </td>

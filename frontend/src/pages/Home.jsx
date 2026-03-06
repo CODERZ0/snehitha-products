@@ -36,14 +36,10 @@ function Home() {
 
   const fetchProducts = async () => {
     try {
-
       const res = await axios.get(`${API}/api/products`);
       setProducts(res.data);
-
     } catch (error) {
-
       console.log(error);
-
     }
   };
 
@@ -80,15 +76,11 @@ function Home() {
       count: 1,
     };
 
-    const existingCart =
-      JSON.parse(localStorage.getItem("cart")) || [];
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
 
     existingCart.push(newItem);
 
-    localStorage.setItem(
-      "cart",
-      JSON.stringify(existingCart)
-    );
+    localStorage.setItem("cart", JSON.stringify(existingCart));
 
     updateCartCount();
 
@@ -100,24 +92,30 @@ function Home() {
 
       {/* NAVBAR */}
       <nav className="bg-white shadow-md fixed top-0 w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
 
-          <div className="flex items-center gap-3">
-            <img
-              src="/images/hero0.jpg"
-              alt="Logo"
-              className="h-8 sm:h-9 object-contain"
-            />
-            <h1 className="text-base sm:text-xl font-bold text-brand">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+
+          <div className="flex items-center gap-2">
+
+            <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+              <img
+                src="/images/hero0.jpg"
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            <h1 className="text-sm sm:text-lg font-bold text-brand">
               Snehitha Products
             </h1>
+
           </div>
 
           <Link
             to="/cart"
-            className="relative flex items-center gap-2 text-brand text-sm sm:text-base"
+            className="relative flex items-center gap-2 text-brand text-sm"
           >
-            <ShoppingCart size={22} />
+            <ShoppingCart size={20} />
             Cart
 
             {cartCount > 0 && (
@@ -129,35 +127,40 @@ function Home() {
           </Link>
 
         </div>
+
       </nav>
 
 
       {/* HERO */}
-      <section className="bg-brand text-white pt-28 sm:pt-32 pb-16">
+      <section className="bg-brand text-white pt-24 pb-12">
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 gap-8 items-center">
 
           <div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6">
-              Pure & Authentic <br /> Homemade Masalas
+            <h1 className="text-xl sm:text-3xl md:text-5xl font-bold mb-3">
+              Pure & Authentic Homemade Masalas
             </h1>
 
-            <p className="text-gray-200 max-w-lg text-sm sm:text-base">
+            <p className="text-sm sm:text-base text-gray-200 max-w-lg">
               Carefully prepared traditional masalas using quality spices,
               delivering rich taste and aroma to every dish.
             </p>
 
           </div>
 
-          <div className="flex justify-center">
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-xl w-full max-w-xs sm:max-w-sm">
+          <div className="flex justify-center md:justify-end">
+
+            <div className="bg-white rounded-xl p-4 shadow-md w-full max-w-[180px] md:max-w-[300px]">
+
               <img
                 src="/images/hero1.jpg"
                 alt="Brand"
                 className="w-full object-contain"
               />
+
             </div>
+
           </div>
 
         </div>
@@ -166,46 +169,58 @@ function Home() {
 
 
       {/* PRODUCTS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <section className="max-w-7xl mx-auto px-4 py-12">
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-brand mb-12">
+        <h2 className="text-2xl font-bold text-brand mb-8">
           Our Products
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
 
           {products.map((product) => (
 
             <div
               key={product._id}
-              className="relative bg-white rounded-2xl shadow-md p-5 sm:p-6 hover:shadow-2xl transition duration-300"
+              className="relative bg-white rounded-xl shadow-sm p-3 hover:shadow-md transition flex flex-col justify-between h-[210px]"
             >
 
               {!product.active && (
-                <div className="absolute top-4 left-4 bg-red-600 text-white text-xs px-3 py-1 rounded-full">
-                  Out of Stock
+                <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                  Out
                 </div>
               )}
 
-              <img
-                src={product.image}
-                alt={product.name}
-                className={`w-full h-40 sm:h-48 object-contain mb-4 ${
-                  !product.active ? "opacity-50" : ""
-                }`}
-              />
+              {/* IMAGE */}
+              <div className="w-full h-20 flex items-center justify-center">
 
-              <h3 className="font-semibold text-base sm:text-lg mb-2">
+                <img
+                  src={
+                    product.image?.startsWith("http")
+                      ? product.image
+                      : `${API}/uploads/${product.image}`
+                  }
+                  alt={product.name}
+                  className={`max-h-full max-w-full object-contain ${
+                    !product.active ? "opacity-50" : ""
+                  }`}
+                />
+
+              </div>
+
+              {/* NAME */}
+              <h3 className="text-xs font-semibold text-center line-clamp-2 min-h-[32px]">
                 {product.name}
               </h3>
 
-              <p className="text-brand font-bold mb-3">
-                ₹{product.basePrice} / kg
+              {/* PRICE */}
+              <p className="text-brand text-xs font-bold text-center">
+                ₹{product.basePrice}/kg
               </p>
 
+              {/* SELECT */}
               <select
                 disabled={!product.active}
-                className="w-full border rounded-lg px-3 py-2 mb-3 text-sm"
+                className="w-full border rounded px-2 py-1 text-xs"
                 onChange={(e) =>
                   handleGramChange(product._id, e.target.value)
                 }
@@ -217,20 +232,22 @@ function Home() {
                 ))}
               </select>
 
-              <p className="text-sm text-gray-500 mb-3">
-                Total: ₹{calculateTotal(product)}
+              {/* TOTAL */}
+              <p className="text-xs text-gray-500 text-center">
+                ₹{calculateTotal(product)}
               </p>
 
+              {/* BUTTON */}
               <button
                 disabled={!product.active}
                 onClick={() => handleAddToCart(product)}
-                className={`w-full py-2 rounded-lg transition text-sm sm:text-base ${
+                className={`w-full text-xs py-1 rounded ${
                   product.active
-                    ? "bg-brand text-white hover:bg-brandHover"
-                    : "bg-gray-400 text-white cursor-not-allowed"
+                    ? "bg-brand text-white"
+                    : "bg-gray-400 text-white"
                 }`}
               >
-                {product.active ? "Add to Cart" : "Unavailable"}
+                Add
               </button>
 
             </div>
