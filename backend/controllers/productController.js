@@ -102,7 +102,7 @@ export const updateProduct = async (req, res) => {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true }
+      { returnDocument: "after" } // ✅ fixed mongoose warning
     );
 
     if (!updatedProduct) {
