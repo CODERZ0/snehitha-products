@@ -195,15 +195,15 @@ function AdminDashboard() {
 
   return (
 
-    <div className="flex bg-cream min-h-screen">
+    <div className="flex flex-col md:flex-row bg-cream min-h-screen">
 
       <AdminSidebar />
 
-      <div className="ml-64 p-6 md:p-10 w-full">
+      <div className="w-full md:ml-64 p-4 sm:p-6 md:p-10">
 
         {/* HEADER */}
 
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
 
           <h1 className="text-2xl md:text-3xl font-bold text-brand">
             Product Management
@@ -211,7 +211,7 @@ function AdminDashboard() {
 
           <button
             onClick={logout}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+            className="bg-red-500 text-white px-4 py-2 rounded-lg w-fit"
           >
             Logout
           </button>
@@ -220,7 +220,7 @@ function AdminDashboard() {
 
         {/* ADD PRODUCT */}
 
-        <div className="bg-white p-6 rounded-2xl shadow-lg mb-10">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg mb-10">
 
           <h2 className="text-xl font-semibold mb-6">
             Add New Product
@@ -228,7 +228,7 @@ function AdminDashboard() {
 
           <form
             onSubmit={handleAddProduct}
-            className="grid md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
 
             <input
@@ -277,7 +277,7 @@ function AdminDashboard() {
 
             <button
               type="submit"
-              className="col-span-2 bg-brand text-white py-3 rounded-lg hover:bg-brandHover transition"
+              className="md:col-span-2 bg-brand text-white py-3 rounded-lg hover:bg-brandHover transition"
             >
               Add Product
             </button>
@@ -288,7 +288,7 @@ function AdminDashboard() {
 
         {/* PRODUCT TABLE */}
 
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-6">
             All Products
@@ -296,7 +296,7 @@ function AdminDashboard() {
 
           <div className="overflow-x-auto">
 
-            <table className="w-full text-left border-collapse">
+            <table className="min-w-[700px] w-full text-left border-collapse">
 
               <thead>
 

@@ -28,18 +28,36 @@ font-family: system-ui, -apple-system, BlinkMacSystemFont,
 background-color: var(--color-cream);
 }
 
-/* Prevent horizontal scroll on mobile */
+/* Prevent layout issues */
 
 * {
-  box-sizing: border-box;
-  }
+box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll on mobile */
 
 html,
 body {
 overflow-x: hidden;
+width: 100%;
+}
+
+/* Images should never overflow */
+img {
+max-width: 100%;
+height: auto;
+display: block;
+}
+
+/* Improve input + button appearance on mobile */
+input,
+select,
+button {
+font-family: inherit;
 }
 
 /* Chatbot scrollbar styling */
+
 .chat-scroll::-webkit-scrollbar {
 width: 6px;
 }

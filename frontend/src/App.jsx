@@ -10,12 +10,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* Landing Page */}
         <Route path="/" element={<Landing />} />
+
+        {/* Products Page */}
         <Route path="/home" element={<Home />} />
+
+        {/* Cart Page */}
         <Route path="/cart" element={<Cart />} />
+
+        {/* Admin Login */}
         <Route path="/admin" element={<AdminLogin />} />
+
+        {/* Checkout Page */}
         <Route path="/checkout" element={<Checkout />} />
+
+        {/* Admin Dashboard */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
       </Routes>
     </BrowserRouter>
   );

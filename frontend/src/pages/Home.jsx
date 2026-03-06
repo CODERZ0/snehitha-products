@@ -38,7 +38,6 @@ function Home() {
     try {
 
       const res = await axios.get(`${API}/api/products`);
-
       setProducts(res.data);
 
     } catch (error) {
@@ -101,24 +100,24 @@ function Home() {
 
       {/* NAVBAR */}
       <nav className="bg-white shadow-md fixed top-0 w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
 
           <div className="flex items-center gap-3">
             <img
               src="/images/hero0.jpg"
               alt="Logo"
-              className="h-9 object-contain"
+              className="h-8 sm:h-9 object-contain"
             />
-            <h1 className="text-lg sm:text-xl font-bold text-brand">
+            <h1 className="text-base sm:text-xl font-bold text-brand">
               Snehitha Products
             </h1>
           </div>
 
           <Link
             to="/cart"
-            className="relative flex items-center gap-2 text-brand"
+            className="relative flex items-center gap-2 text-brand text-sm sm:text-base"
           >
-            <ShoppingCart size={24} />
+            <ShoppingCart size={22} />
             Cart
 
             {cartCount > 0 && (
@@ -134,17 +133,17 @@ function Home() {
 
 
       {/* HERO */}
-      <section className="bg-brand text-white pt-32 sm:pt-28 pb-16">
+      <section className="bg-brand text-white pt-28 sm:pt-32 pb-16">
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 
           <div>
 
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6">
               Pure & Authentic <br /> Homemade Masalas
             </h1>
 
-            <p className="text-gray-200 max-w-lg">
+            <p className="text-gray-200 max-w-lg text-sm sm:text-base">
               Carefully prepared traditional masalas using quality spices,
               delivering rich taste and aroma to every dish.
             </p>
@@ -152,7 +151,7 @@ function Home() {
           </div>
 
           <div className="flex justify-center">
-            <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-sm">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-xl w-full max-w-xs sm:max-w-sm">
               <img
                 src="/images/hero1.jpg"
                 alt="Brand"
@@ -169,17 +168,17 @@ function Home() {
       {/* PRODUCTS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
 
-        <h2 className="text-3xl font-bold text-brand mb-12">
+        <h2 className="text-2xl sm:text-3xl font-bold text-brand mb-12">
           Our Products
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
 
           {products.map((product) => (
 
             <div
               key={product._id}
-              className="relative bg-white rounded-2xl shadow-md p-6 hover:shadow-2xl transition duration-300"
+              className="relative bg-white rounded-2xl shadow-md p-5 sm:p-6 hover:shadow-2xl transition duration-300"
             >
 
               {!product.active && (
@@ -188,16 +187,15 @@ function Home() {
                 </div>
               )}
 
-              {/* FIXED IMAGE */}
               <img
                 src={product.image}
                 alt={product.name}
-                className={`w-full h-48 object-contain mb-4 ${
+                className={`w-full h-40 sm:h-48 object-contain mb-4 ${
                   !product.active ? "opacity-50" : ""
                 }`}
               />
 
-              <h3 className="font-semibold text-lg mb-2">
+              <h3 className="font-semibold text-base sm:text-lg mb-2">
                 {product.name}
               </h3>
 
@@ -207,7 +205,7 @@ function Home() {
 
               <select
                 disabled={!product.active}
-                className="w-full border rounded-lg px-3 py-2 mb-3"
+                className="w-full border rounded-lg px-3 py-2 mb-3 text-sm"
                 onChange={(e) =>
                   handleGramChange(product._id, e.target.value)
                 }
@@ -226,7 +224,7 @@ function Home() {
               <button
                 disabled={!product.active}
                 onClick={() => handleAddToCart(product)}
-                className={`w-full py-2 rounded-lg transition ${
+                className={`w-full py-2 rounded-lg transition text-sm sm:text-base ${
                   product.active
                     ? "bg-brand text-white hover:bg-brandHover"
                     : "bg-gray-400 text-white cursor-not-allowed"

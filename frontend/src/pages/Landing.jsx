@@ -6,12 +6,12 @@ function Landing() {
 
       {/* ================= NAVBAR ================= */}
       <nav className="fixed top-0 w-full bg-white shadow-md z-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
 
           {/* Logo + Title */}
           <div className="flex items-center gap-3">
-            <img src="/images/hero0.jpg" alt="Logo" className="h-10" />
-            <h1 className="text-xl md:text-2xl font-bold text-brand">
+            <img src="/images/hero0.jpg" alt="Logo" className="h-8 sm:h-10 object-contain" />
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-brand">
               Snehitha Products
             </h1>
           </div>
@@ -30,18 +30,18 @@ function Landing() {
       {/* ================= HERO SECTION ================= */}
       <section
         id="home"
-        className="pt-28 min-h-screen bg-brand text-white flex items-center"
+        className="pt-24 sm:pt-28 min-h-screen bg-brand text-white flex items-center"
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
 
           {/* LEFT SIDE */}
           <div>
-            <h2 className="text-3xl md:text-6xl font-extrabold leading-tight mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight mb-6">
               Pure & Authentic <br />
               Homemade Masalas
             </h2>
 
-            <p className="text-base md:text-lg text-gray-200 mb-8 max-w-lg">
+            <p className="text-sm sm:text-base md:text-lg text-gray-200 mb-8 max-w-lg">
               Carefully prepared traditional masalas using quality spices,
               delivering rich taste and aroma to every dish.
             </p>
@@ -56,7 +56,7 @@ function Landing() {
 
           {/* RIGHT SIDE */}
           <div className="flex justify-center">
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-2xl w-full max-w-md">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl w-full max-w-sm md:max-w-md">
               <img
                 src="/images/hero1.jpg"
                 alt="Brand"
@@ -69,7 +69,7 @@ function Landing() {
       </section>
 
       {/* ================= ABOUT SECTION ================= */}
-      <section id="about" className="py-24 px-4 md:px-6 bg-white">
+      <section id="about" className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <img
             src="/images/hero2.jpg"
@@ -80,22 +80,30 @@ function Landing() {
       </section>
 
       {/* ================= PRODUCTS SECTION ================= */}
-      <section id="products" className="py-24 bg-gray-100 space-y-24">
+      <section id="products" className="py-16 sm:py-24 bg-gray-100 space-y-16 sm:space-y-24">
+
         {[3, 4, 5, 6, 7].map((num) => (
-          <div key={num} className="max-w-6xl mx-auto px-4 md:px-6">
+
+          <div key={num} className="max-w-6xl mx-auto px-4 sm:px-6">
+
             <div className="group overflow-hidden rounded-2xl shadow-xl transition duration-500">
+
               <img
                 src={`/images/hero${num}.jpg`}
                 alt={`hero${num}`}
                 className="w-full rounded-2xl transform transition duration-700 group-hover:scale-105 group-hover:-translate-y-3 group-hover:shadow-2xl"
               />
+
             </div>
+
           </div>
+
         ))}
+
       </section>
 
       {/* ================= CONTACT SECTION ================= */}
-      <section id="contact" className="py-24 px-4 md:px-6 bg-white">
+      <section id="contact" className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <img
             src="/images/hero8.jpg"
