@@ -1,24 +1,53 @@
-import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import { v2 as cloudinary } from "cloudinary";
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+import productRoutes from "./routes/productRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js"; // ✅ ADD THIS
+
+dotenv.config();
+
+const app = express();
+
+// ================= MIDDLEWARE =================
+
+// Enable CORS for frontend
+app.use(cors());
+
+// Parse JSON bodies
+app.use(express.json());
+
+// ================= ROUTES =================
+
+// Health check route
+app.get("/", (req, res) => {
+  res.send("API Running...");
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: async (req, file) => {
-    return {
-      folder: "snehitha-products",
-      format: file.mimetype.split("/")[1], // jpg/png
-      public_id: Date.now() + "-" + file.originalname
-    };
-  }
+// Product API routes
+app.use("/api/products", productRoutes);
+
+// Admin login route
+app.use("/api/admin", adminRoutes); // ✅ ADD THIS
+
+// ================= DATABASE CONNECTION =================
+
+const PORT = process.env.PORT || 5000;
+
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+
+  console.log("✅ MongoDB Connected");
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+
+})
+.catch((error) => {
+
+  console.error("❌ MongoDB Connection Failed:");
+  console.error(error);
+
 });
-
-const upload = multer({ storage });
-
-export default upload;

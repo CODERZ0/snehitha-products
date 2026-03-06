@@ -3,10 +3,8 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 
-// Load environment variables for this file
 dotenv.config();
 
-// Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -16,21 +14,21 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
-    // Determine format safely
-    let fileFormat = file.mimetype.split("/")[1];
-    if (fileFormat === "jpeg") fileFormat = "jpg"; // Cloudinary preference
+
+    let format = file.mimetype.split("/")[1];
+    if (format === "jpeg") format = "jpg";
 
     return {
       folder: "snehitha-products",
-      format: fileFormat,
-      public_id: Date.now() + "-" + file.originalname.split('.')[0]
+      format,
+      public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, "")}`
     };
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit safety
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 export default upload;

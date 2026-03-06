@@ -2,111 +2,207 @@ import Product from "../models/Product.js";
 
 // ================= GET ALL PRODUCTS =================
 export const getProducts = async (req, res) => {
-  try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    res.status(200).json(products);
-  } catch (error) {
-    console.error("GET PRODUCTS ERROR:", error.message);
-    res.status(500).json({ message: "Error fetching products" });
-  }
+try {
+const products = await Product.find().sort({ createdAt: -1 });
+
+```
+res.status(200).json(products);
+```
+
+} catch (error) {
+console.error("GET PRODUCTS ERROR:", error);
+res.status(500).json({ message: "Error fetching products" });
+}
 };
 
 // ================= ADD PRODUCT =================
 export const addProduct = async (req, res) => {
-  try {
-    console.log("--- NEW PRODUCT ATTEMPT ---");
-    console.log("Body Data:", req.body);
-    console.log("File Data:", req.file ? `Received: ${req.file.originalname}` : "NO FILE RECEIVED");
+try {
+console.log("---- ADD PRODUCT REQUEST ----");
+console.log("BODY:", req.body);
+console.log("FILE:", req.file);
 
-    if (!req.file) {
-      return res.status(400).json({ message: "Product image is required" });
-    }
+```
+// Image validation
+if (!req.file) {
+  return res.status(400).json({ message: "Product image is required" });
+}
 
-    const { name, category, basePrice } = req.body;
+const { name, category, basePrice } = req.body;
 
-    if (!name || !category || !basePrice) {
-      return res.status(400).json({ message: "Missing product details (name, category, or price)" });
-    }
+if (!name || !category || !basePrice) {
+  return res.status(400).json({
+    message: "Missing required fields: name, category, or basePrice"
+  });
+}
 
-    const product = new Product({
-      name,
-      category,
-      basePrice: Number(basePrice),
-      image: req.file.path, // Cloudinary URL
-      active: true
-    });
+const product = new Product({
+  name,
+  category,
+  basePrice: Number(basePrice),
+  image: req.file.path, // Cloudinary URL
+  active: true
+});
 
-    await product.save();
-    console.log("✅ Product Saved Successfully:", product.name);
-    res.status(201).json(product);
+const savedProduct = await product.save();
 
-  } catch (error) {
-    // FIX: This forces the full error object to be visible in Render logs
-    console.error("❌ ADD PRODUCT CRASHED:");
-    console.error("DETAILED ERROR:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
-    
-    res.status(500).json({ 
-      message: "Server Error: Could not add product", 
-      error: error.message 
-    });
-  }
+console.log("✅ PRODUCT CREATED:", savedProduct.name);
+
+res.status(201).json(savedProduct);
+```
+
+} catch (error) {
+console.error("❌ ADD PRODUCT ERROR:", error);
+
+```
+res.status(500).json({
+  message: "Server error while adding product",
+  error: error.message
+});
+```
+
+}
 };
 
 // ================= UPDATE PRODUCT =================
 export const updateProduct = async (req, res) => {
-  try {
-    const updateData = {};
-    if (req.body.basePrice !== undefined) updateData.basePrice = Number(req.body.basePrice);
-    if (req.body.active !== undefined) updateData.active = Boolean(req.body.active);
-    if (req.body.name) updateData.name = req.body.name;
-    if (req.body.category) updateData.category = req.body.category;
+try {
+const updateData = {};
 
-    if (req.file) {
-      updateData.image = req.file.path;
-    }
+```
+if (req.body.basePrice !== undefined) {
+  updateData.basePrice = Number(req.body.basePrice);
+}
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    );
+if (req.body.active !== undefined) {
+  updateData.active = Boolean(req.body.active);
+}
 
-    res.status(200).json(updatedProduct);
-  } catch (error) {
-    console.error("❌ UPDATE PRODUCT ERROR:");
-    console.error("DETAILED ERROR:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
-    res.status(500).json({ message: "Error updating product", error: error.message });
-  }
+if (req.body.name) {
+  updateData.name = req.body.name;
+}
+
+if (req.body.category) {
+  updateData.category = req.body.category;
+}
+
+// If a new image is uploaded
+if (req.file) {
+  updateData.image = req.file.path;
+}
+
+const updatedProduct = await Product.findByIdAndUpdate(
+  req.params.id,
+  updateData,
+  { new: true }
+);
+
+if (!updatedProduct) {
+  return res.status(404).json({ message: "Product not found" });
+}
+
+res.status(200).json(updatedProduct);
+```
+
+} catch (error) {
+console.error("❌ UPDATE PRODUCT ERROR:", error);
+
+```
+res.status(500).json({
+  message: "Error updating product",
+  error: error.message
+});
+```
+
+}
 };
 
 // ================= DELETE PRODUCT =================
 export const deleteProduct = async (req, res) => {
-  try {
-    await Product.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Product deleted successfully" });
-  } catch (error) {
-    console.error("DELETE PRODUCT ERROR:", error.message);
-    res.status(500).json({ message: "Error deleting product" });
-  }
+try {
+const product = await Product.findByIdAndDelete(req.params.id);
+
+```
+if (!product) {
+  return res.status(404).json({ message: "Product not found" });
+}
+
+res.status(200).json({
+  message: "Product deleted successfully"
+});
+```
+
+} catch (error) {
+console.error("DELETE PRODUCT ERROR:", error);
+
+```
+res.status(500).json({
+  message: "Error deleting product"
+});
+```
+
+}
 };
 
 // ================= SEED PRODUCTS =================
 export const seedProducts = async (req, res) => {
-  try {
-    await Product.deleteMany();
+try {
+await Product.deleteMany();
 
-    const products = [
-      { name: "Chicken Masala", category: "masalas", basePrice: 400, image: "https://via.placeholder.com/150", active: true },
-      { name: "Fish Masala", category: "masalas", basePrice: 380, image: "https://via.placeholder.com/150", active: true },
-      { name: "Garam Masala", category: "masalas", basePrice: 450, image: "https://via.placeholder.com/150", active: true },
-      { name: "Coriander Powder", category: "powders", basePrice: 300, image: "https://via.placeholder.com/150", active: true },
-      { name: "Turmeric Powder", category: "powders", basePrice: 260, image: "https://via.placeholder.com/150", active: true }
-    ];
-
-    await Product.insertMany(products);
-    res.status(200).json({ message: "Products seeded successfully" });
-  } catch (error) {
-    console.error("SEED PRODUCTS ERROR:", error.message);
-    res.status(500).json({ message: "Seeding failed" });
+```
+const products = [
+  {
+    name: "Chicken Masala",
+    category: "masalas",
+    basePrice: 400,
+    image: "https://via.placeholder.com/150",
+    active: true
+  },
+  {
+    name: "Fish Masala",
+    category: "masalas",
+    basePrice: 380,
+    image: "https://via.placeholder.com/150",
+    active: true
+  },
+  {
+    name: "Garam Masala",
+    category: "masalas",
+    basePrice: 450,
+    image: "https://via.placeholder.com/150",
+    active: true
+  },
+  {
+    name: "Coriander Powder",
+    category: "powders",
+    basePrice: 300,
+    image: "https://via.placeholder.com/150",
+    active: true
+  },
+  {
+    name: "Turmeric Powder",
+    category: "powders",
+    basePrice: 260,
+    image: "https://via.placeholder.com/150",
+    active: true
   }
+];
+
+await Product.insertMany(products);
+
+res.status(200).json({
+  message: "Products seeded successfully"
+});
+```
+
+} catch (error) {
+console.error("SEED PRODUCTS ERROR:", error);
+
+```
+res.status(500).json({
+  message: "Seeding failed"
+});
+```
+
+}
 };
