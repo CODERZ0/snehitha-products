@@ -50,7 +50,7 @@ function AdminDashboard() {
 
     } catch (error) {
 
-      console.log(error);
+      console.log("FETCH PRODUCTS ERROR:", error);
 
     }
 
@@ -83,7 +83,12 @@ function AdminDashboard() {
       await axios.post(
         `${API}/api/products`,
         formData,
-        getAuthHeader()
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }
       );
 
       alert("Product added successfully ✅");
@@ -99,9 +104,10 @@ function AdminDashboard() {
 
     } catch (error) {
 
-      console.log(error);
+      console.log("ADD PRODUCT ERROR:", error);
+      console.log("SERVER RESPONSE:", error?.response?.data);
 
-      alert("Error adding product");
+      alert(error?.response?.data?.message || "Error adding product");
 
     }
 
@@ -123,6 +129,7 @@ function AdminDashboard() {
 
     } catch (error) {
 
+      console.log("TOGGLE ERROR:", error);
       alert("Update failed");
 
     }
@@ -145,6 +152,7 @@ function AdminDashboard() {
 
     } catch (error) {
 
+      console.log("PRICE UPDATE ERROR:", error);
       alert("Price update failed");
 
     }
@@ -168,6 +176,7 @@ function AdminDashboard() {
 
     } catch (error) {
 
+      console.log("DELETE ERROR:", error);
       alert("Delete failed");
 
     }
@@ -313,7 +322,11 @@ function AdminDashboard() {
                     <td className="p-3">
 
                       <img
-                        src={product.image}
+                        src={
+                          product.image?.startsWith("http")
+                            ? product.image
+                            : `${API}/uploads/${product.image}`
+                        }
                         alt={product.name}
                         className="w-16 h-16 object-contain rounded"
                       />

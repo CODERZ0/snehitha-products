@@ -5,30 +5,56 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// ================= CLOUDINARY CONFIG =================
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// ================= STORAGE CONFIG =================
+
 const storage = new CloudinaryStorage({
-  cloudinary,
+  cloudinary: cloudinary,
   params: async (req, file) => {
 
-    let format = file.mimetype.split("/")[1];
-    if (format === "jpeg") format = "jpg";
+    // fallback format
+    let format = "jpg";
+
+    if (file.mimetype) {
+      format = file.mimetype.split("/")[1];
+      if (format === "jpeg") format = "jpg";
+    }
 
     return {
       folder: "snehitha-products",
-      format,
+      format: format,
       public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, "")}`
     };
   }
 });
 
+// ================= FILE FILTER =================
+
+const fileFilter = (req, file, cb) => {
+
+  if (file.mimetype && file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed"), false);
+  }
+
+};
+
+// ================= MULTER SETUP =================
+
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  }
 });
 
 export default upload;

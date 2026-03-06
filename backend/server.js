@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import productRoutes from "./routes/productRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js"; // ✅ ADD THIS
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -12,24 +12,27 @@ const app = express();
 
 // ================= MIDDLEWARE =================
 
-// Enable CORS for frontend
+// Enable CORS
 app.use(cors());
 
-// Parse JSON bodies
+// Parse JSON
 app.use(express.json());
+
+// Serve uploaded images (VERY IMPORTANT)
+app.use("/uploads", express.static("uploads"));
 
 // ================= ROUTES =================
 
-// Health check route
+// Health check
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
 
-// Product API routes
+// Product routes
 app.use("/api/products", productRoutes);
 
-// Admin login route
-app.use("/api/admin", adminRoutes); // ✅ ADD THIS
+// Admin routes
+app.use("/api/admin", adminRoutes);
 
 // ================= DATABASE CONNECTION =================
 
