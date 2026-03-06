@@ -3,14 +3,20 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
+  const API = import.meta.env.VITE_API_URL;
+
   const handleLogin = async () => {
+
     try {
+
       const res = await axios.post(
-        "http://localhost:5000/api/admin/login",
+        `${API}/api/admin/login`,
         { email, password }
       );
 
@@ -19,11 +25,15 @@ function AdminLogin() {
       navigate("/admin/dashboard");
 
     } catch (error) {
+
       alert("Invalid credentials");
+
     }
+
   };
 
   return (
+
     <div className="min-h-screen flex items-center justify-center bg-cream">
 
       <div className="bg-white p-10 rounded-2xl shadow-xl w-96">
@@ -54,8 +64,11 @@ function AdminLogin() {
         </button>
 
       </div>
+
     </div>
+
   );
+
 }
 
 export default AdminLogin;
