@@ -13,6 +13,8 @@ function Cart() {
     pincode: "",
   });
 
+  const API = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
@@ -196,9 +198,13 @@ Pincode: ${form.pincode}
 
                 <div className="flex gap-4 items-center">
 
-                  {/* FIXED CLOUDINARY IMAGE */}
+                  {/* FIXED IMAGE */}
                   <img
-                    src={item.image}
+                    src={
+                      item.image?.startsWith("http")
+                        ? item.image
+                        : `${API}/uploads/${item.image}`
+                    }
                     alt={item.name}
                     className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-lg border"
                   />
