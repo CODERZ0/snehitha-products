@@ -5,6 +5,7 @@ import cors from "cors";
 
 import productRoutes from "./routes/productRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js"; // ✅ Chatbot route
 
 dotenv.config();
 
@@ -33,6 +34,9 @@ app.use("/api/products", productRoutes);
 
 // Admin routes
 app.use("/api/admin", adminRoutes);
+
+// Chatbot route (Groq API)
+app.use("/api/chat", chatRoutes);
 
 // ================= DATABASE CONNECTION =================
 
