@@ -1,208 +1,220 @@
 import Product from "../models/Product.js";
 
+
 // ================= GET ALL PRODUCTS =================
 export const getProducts = async (req, res) => {
-try {
-const products = await Product.find().sort({ createdAt: -1 });
+  try {
 
-```
-res.status(200).json(products);
-```
+    const products = await Product.find().sort({ createdAt: -1 });
 
-} catch (error) {
-console.error("GET PRODUCTS ERROR:", error);
-res.status(500).json({ message: "Error fetching products" });
-}
+    res.status(200).json(products);
+
+  } catch (error) {
+
+    console.error("❌ GET PRODUCTS ERROR:", error);
+
+    res.status(500).json({
+      message: "Error fetching products",
+      error: error.message
+    });
+
+  }
 };
+
+
 
 // ================= ADD PRODUCT =================
 export const addProduct = async (req, res) => {
-try {
-console.log("---- ADD PRODUCT REQUEST ----");
-console.log("BODY:", req.body);
-console.log("FILE:", req.file);
+  try {
 
-```
-// Image validation
-if (!req.file) {
-  return res.status(400).json({ message: "Product image is required" });
-}
+    console.log("---- ADD PRODUCT REQUEST ----");
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
-const { name, category, basePrice } = req.body;
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Product image is required"
+      });
+    }
 
-if (!name || !category || !basePrice) {
-  return res.status(400).json({
-    message: "Missing required fields: name, category, or basePrice"
-  });
-}
+    const { name, category, basePrice } = req.body;
 
-const product = new Product({
-  name,
-  category,
-  basePrice: Number(basePrice),
-  image: req.file.path, // Cloudinary URL
-  active: true
-});
+    if (!name || !category || !basePrice) {
+      return res.status(400).json({
+        message: "Missing required fields: name, category, or basePrice"
+      });
+    }
 
-const savedProduct = await product.save();
+    const product = new Product({
+      name,
+      category,
+      basePrice: Number(basePrice),
+      image: req.file.path, // Cloudinary URL
+      active: true
+    });
 
-console.log("✅ PRODUCT CREATED:", savedProduct.name);
+    const savedProduct = await product.save();
 
-res.status(201).json(savedProduct);
-```
+    console.log("✅ PRODUCT CREATED:", savedProduct.name);
 
-} catch (error) {
-console.error("❌ ADD PRODUCT ERROR:", error);
+    res.status(201).json(savedProduct);
 
-```
-res.status(500).json({
-  message: "Server error while adding product",
-  error: error.message
-});
-```
+  } catch (error) {
 
-}
+    console.error("❌ ADD PRODUCT ERROR:", error);
+
+    res.status(500).json({
+      message: "Server error while adding product",
+      error: error.message
+    });
+
+  }
 };
+
+
 
 // ================= UPDATE PRODUCT =================
 export const updateProduct = async (req, res) => {
-try {
-const updateData = {};
+  try {
 
-```
-if (req.body.basePrice !== undefined) {
-  updateData.basePrice = Number(req.body.basePrice);
-}
+    const updateData = {};
 
-if (req.body.active !== undefined) {
-  updateData.active = Boolean(req.body.active);
-}
+    if (req.body.basePrice !== undefined) {
+      updateData.basePrice = Number(req.body.basePrice);
+    }
 
-if (req.body.name) {
-  updateData.name = req.body.name;
-}
+    if (req.body.active !== undefined) {
+      updateData.active = Boolean(req.body.active);
+    }
 
-if (req.body.category) {
-  updateData.category = req.body.category;
-}
+    if (req.body.name) {
+      updateData.name = req.body.name;
+    }
 
-// If a new image is uploaded
-if (req.file) {
-  updateData.image = req.file.path;
-}
+    if (req.body.category) {
+      updateData.category = req.body.category;
+    }
 
-const updatedProduct = await Product.findByIdAndUpdate(
-  req.params.id,
-  updateData,
-  { new: true }
-);
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
 
-if (!updatedProduct) {
-  return res.status(404).json({ message: "Product not found" });
-}
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
 
-res.status(200).json(updatedProduct);
-```
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
 
-} catch (error) {
-console.error("❌ UPDATE PRODUCT ERROR:", error);
+    res.status(200).json(updatedProduct);
 
-```
-res.status(500).json({
-  message: "Error updating product",
-  error: error.message
-});
-```
+  } catch (error) {
 
-}
+    console.error("❌ UPDATE PRODUCT ERROR:", error);
+
+    res.status(500).json({
+      message: "Error updating product",
+      error: error.message
+    });
+
+  }
 };
+
+
 
 // ================= DELETE PRODUCT =================
 export const deleteProduct = async (req, res) => {
-try {
-const product = await Product.findByIdAndDelete(req.params.id);
+  try {
 
-```
-if (!product) {
-  return res.status(404).json({ message: "Product not found" });
-}
+    const product = await Product.findByIdAndDelete(req.params.id);
 
-res.status(200).json({
-  message: "Product deleted successfully"
-});
-```
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
 
-} catch (error) {
-console.error("DELETE PRODUCT ERROR:", error);
+    res.status(200).json({
+      message: "Product deleted successfully"
+    });
 
-```
-res.status(500).json({
-  message: "Error deleting product"
-});
-```
+  } catch (error) {
 
-}
+    console.error("❌ DELETE PRODUCT ERROR:", error);
+
+    res.status(500).json({
+      message: "Error deleting product",
+      error: error.message
+    });
+
+  }
 };
+
+
 
 // ================= SEED PRODUCTS =================
 export const seedProducts = async (req, res) => {
-try {
-await Product.deleteMany();
+  try {
 
-```
-const products = [
-  {
-    name: "Chicken Masala",
-    category: "masalas",
-    basePrice: 400,
-    image: "https://via.placeholder.com/150",
-    active: true
-  },
-  {
-    name: "Fish Masala",
-    category: "masalas",
-    basePrice: 380,
-    image: "https://via.placeholder.com/150",
-    active: true
-  },
-  {
-    name: "Garam Masala",
-    category: "masalas",
-    basePrice: 450,
-    image: "https://via.placeholder.com/150",
-    active: true
-  },
-  {
-    name: "Coriander Powder",
-    category: "powders",
-    basePrice: 300,
-    image: "https://via.placeholder.com/150",
-    active: true
-  },
-  {
-    name: "Turmeric Powder",
-    category: "powders",
-    basePrice: 260,
-    image: "https://via.placeholder.com/150",
-    active: true
+    await Product.deleteMany();
+
+    const products = [
+      {
+        name: "Chicken Masala",
+        category: "masalas",
+        basePrice: 400,
+        image: "https://via.placeholder.com/150",
+        active: true
+      },
+      {
+        name: "Fish Masala",
+        category: "masalas",
+        basePrice: 380,
+        image: "https://via.placeholder.com/150",
+        active: true
+      },
+      {
+        name: "Garam Masala",
+        category: "masalas",
+        basePrice: 450,
+        image: "https://via.placeholder.com/150",
+        active: true
+      },
+      {
+        name: "Coriander Powder",
+        category: "powders",
+        basePrice: 300,
+        image: "https://via.placeholder.com/150",
+        active: true
+      },
+      {
+        name: "Turmeric Powder",
+        category: "powders",
+        basePrice: 260,
+        image: "https://via.placeholder.com/150",
+        active: true
+      }
+    ];
+
+    await Product.insertMany(products);
+
+    res.status(200).json({
+      message: "Products seeded successfully"
+    });
+
+  } catch (error) {
+
+    console.error("❌ SEED PRODUCTS ERROR:", error);
+
+    res.status(500).json({
+      message: "Seeding failed",
+      error: error.message
+    });
+
   }
-];
-
-await Product.insertMany(products);
-
-res.status(200).json({
-  message: "Products seeded successfully"
-});
-```
-
-} catch (error) {
-console.error("SEED PRODUCTS ERROR:", error);
-
-```
-res.status(500).json({
-  message: "Seeding failed"
-});
-```
-
-}
 };
