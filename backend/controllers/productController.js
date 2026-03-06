@@ -5,7 +5,15 @@ import Product from "../models/Product.js";
 export const getProducts = async (req, res) => {
   try {
 
-    const products = await Product.find().sort({ createdAt: -1 });
+    let products = await Product.find().sort({ createdAt: -1 });
+
+    // ✅ FIX OLD LOCAL IMAGE PATHS
+    products = products.map((p) => {
+      if (p.image && !p.image.startsWith("http")) {
+        p.image = `${req.protocol}://${req.get("host")}/uploads/${p.image}`;
+      }
+      return p;
+    });
 
     res.status(200).json(products);
 
@@ -102,7 +110,7 @@ export const updateProduct = async (req, res) => {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { returnDocument: "after" } // ✅ fixed mongoose warning
+      { returnDocument: "after" } // ✅ removes mongoose warning
     );
 
     if (!updatedProduct) {
