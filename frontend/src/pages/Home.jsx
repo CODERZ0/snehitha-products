@@ -181,7 +181,7 @@ function Home() {
 
             <div
               key={product._id}
-              className="relative bg-white rounded-xl shadow-sm p-3 hover:shadow-md transition flex flex-col justify-between h-[210px]"
+              className="relative bg-white rounded-xl shadow-sm p-3 hover:shadow-md transition flex flex-col gap-2"
             >
 
               {!product.active && (
@@ -208,7 +208,7 @@ function Home() {
               </div>
 
               {/* NAME */}
-              <h3 className="text-xs font-semibold text-center line-clamp-2 min-h-[32px]">
+              <h3 className="text-xs font-semibold text-center line-clamp-2 min-h-[34px]">
                 {product.name}
               </h3>
 
