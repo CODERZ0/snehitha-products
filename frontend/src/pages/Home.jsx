@@ -26,8 +26,6 @@ function Home() {
   const [products, setProducts] = useState([]);
   const [selectedGrams, setSelectedGrams] = useState({});
   const [cartCount, setCartCount] = useState(0);
-
-  // ✅ Loading state added
   const [loading, setLoading] = useState(true);
 
   const API = import.meta.env.VITE_API_URL;
@@ -37,7 +35,6 @@ function Home() {
     fetchProducts();
     updateCartCount();
 
-    // ✅ Polling every 10 seconds
     const interval = setInterval(() => {
       fetchProducts();
     }, 10000);
@@ -48,18 +45,12 @@ function Home() {
 
   const fetchProducts = async () => {
     try {
-
       const res = await axios.get(`${API}/api/products`);
       setProducts(res.data);
-
     } catch (error) {
-
       console.log(error);
-
     } finally {
-
       setLoading(false);
-
     }
   };
 
@@ -195,7 +186,6 @@ function Home() {
           Our Products
         </h2>
 
-        {/* ✅ Loading message */}
         {loading ? (
 
           <p className="text-center text-gray-500">
@@ -213,13 +203,8 @@ function Home() {
                 className="relative bg-white rounded-xl shadow-sm p-3 hover:shadow-md transition flex flex-col gap-2"
               >
 
-                {!product.active && (
-                  <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-                    Out
-                  </div>
-                )}
-
-                <div className="w-full h-20 flex items-center justify-center">
+                {/* IMAGE + OUT OF STOCK OVERLAY */}
+                <div className="relative w-full h-20 flex items-center justify-center">
 
                   <img
                     src={
@@ -232,6 +217,14 @@ function Home() {
                       !product.active ? "opacity-50" : ""
                     }`}
                   />
+
+                  {!product.active && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded">
+                      <span className="text-white text-[10px] font-semibold bg-red-600 px-2 py-1 rounded">
+                        OUT OF STOCK
+                      </span>
+                    </div>
+                  )}
 
                 </div>
 
